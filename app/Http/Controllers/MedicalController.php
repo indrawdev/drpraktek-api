@@ -23,6 +23,7 @@ class MedicalController extends Controller
 	{
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required',
+			'registration_id' => 'required',
 			'doctor_id' => 'required',
 			'patient_id' => 'required',
 			'anamnesa' => 'required',
@@ -34,6 +35,7 @@ class MedicalController extends Controller
 		} else {
 			$medical = new Medical();
 			$medical->clinic_id = $request->clinic_id;
+			$medical->registration_id = $request->registration_id;
 			$medical->doctor_id = $request->doctor_id;
 			$medical->patient_id = $request->patient_id;
 			$medical->anamnesa = $request->anamnesa;

@@ -22,14 +22,30 @@ class PatientController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'clinic_id' => 'required',
+			'name' => 'required',
+			'number' => 'required',
+			'dob' => 'required',
+			'gender' => 'required',
+			'phone' => 'required',
 		]);
 
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$patient = new Patient();
+			$patient->clinic_id = $request->clinic_id;
+			$patient->insurance_id = $request->insurance_id;
 			$patient->name = $request->name;
+			$patient->number = $request->number;
+			$patient->dob = $request->dob;
+			$patient->gender = $request->gender;
+			$patient->blood = $request->blood;
+			$patient->height = $request->height;
+			$patient->weight = $request->weight;
+			$patient->address = $request->address;
+			$patient->phone = $request->phone;
+			$patient->insurance_number = $request->insurance_number;
 			$patient->save();
 
 			return response()->json(['success' => true, 'data' => $patient], 201);
@@ -50,7 +66,11 @@ class PatientController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'name' => 'required',
+			'number' => 'required',
+			'dob' => 'required',
+			'gender' => 'required',
+			'phone' => 'required',
 		]);
 
 		if ($validator->fails()) { 
@@ -59,7 +79,17 @@ class PatientController extends Controller
 			$patient = Patient::find($id);
 			
 			if ($patient) {
+				$patient->insurance_id = $request->insurance_id;
 				$patient->name = $request->name;
+				$patient->number = $request->number;
+				$patient->dob = $request->dob;
+				$patient->gender = $request->gender;
+				$patient->blood = $request->blood;
+				$patient->height = $request->height;
+				$patient->weight = $request->weight;
+				$patient->address = $request->address;
+				$patient->phone = $request->phone;
+				$patient->insurance_number = $request->insurance_number;
 				$patient->save();
 				return response()->json(['success' => true, 'data' => $patient], 200);
 			} else {

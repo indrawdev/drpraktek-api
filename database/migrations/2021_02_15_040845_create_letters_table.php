@@ -15,6 +15,7 @@ class CreateLettersTable extends Migration
 	{
 		Schema::create('letters', function (Blueprint $table) {
 			$table->id();
+			$table->uuid('uuid');
 			$table->foreignId('clinic_id');
 			$table->foreignId('doctor_id');
 			$table->foreignId('patient_id');
@@ -28,6 +29,7 @@ class CreateLettersTable extends Migration
 		});
 
 		Schema::create('letters_sick', function (Blueprint $table) {
+			$table->id();
 			$table->foreignId('letter_id');
 			$table->date('start');
 			$table->date('end');
@@ -36,6 +38,7 @@ class CreateLettersTable extends Migration
 		});
 
 		Schema::create('letters_pregnant', function (Blueprint $table) {
+			$table->id();
 			$table->foreignId('letter_id');
 			$table->date('start');
 			$table->date('end');

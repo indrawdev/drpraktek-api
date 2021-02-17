@@ -41,11 +41,6 @@ class Clinic extends Model
 		return $this->hasMany('App\Models\Patient');
 	}
 
-	public function fees()
-	{
-		return $this->hasMany('App\Models\Fee');
-	}
-
 	public function medicals()
 	{
 		return $this->hasMany('App\Models\Medical');
@@ -54,11 +49,6 @@ class Clinic extends Model
 	public function letters()
 	{
 		return $this->hasMany('App\Models\Letter');
-	}
-
-	public function suppliers()
-	{
-		return $this->hasMany('App\Models\Supplier');
 	}
 
 	public function setSlugAttribute($value)

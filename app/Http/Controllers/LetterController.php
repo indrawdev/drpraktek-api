@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Letter;
+use Illuminate\Support\Str;
 use PDF;
 
 class LetterController extends Controller
@@ -25,7 +26,7 @@ class LetterController extends Controller
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required',
 			'doctor_id' => 'required',
-			'patient_id' => 'required',
+			'patient_id' => 'required'
 		]);
 
 		if ($validator->fails()) { 
@@ -35,6 +36,7 @@ class LetterController extends Controller
 			$letter->clinic_id = $request->clinic_id;
 			$letter->doctor_id = $request->doctor_id;
 			$letter->patient_id = $request->patient_id;
+			$letter->uuid = (string) Str::uuid();
 			$letter->save();
 
 			return response()->json(['success' => true, 'data' => $letter], 201);
@@ -53,7 +55,7 @@ class LetterController extends Controller
 			$letter = Letter::find($id);
 
 			if ($letter) {
-				return response()->json(['success' => true, 'data' => $letter], 201);
+				return response()->json(['success' => true, 'data' => $letter], 200);
 			} else {
 				return response()->json(['message' => 'Not Found'], 404);
 			}

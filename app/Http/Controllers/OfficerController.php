@@ -29,6 +29,7 @@ class OfficerController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$officer = new Officer();
+			$officer->clinic_id = $request->clinic_id;
 			$officer->name = $request->name;
 			$officer->save();
 

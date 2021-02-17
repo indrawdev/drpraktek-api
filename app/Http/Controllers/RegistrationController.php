@@ -22,14 +22,22 @@ class RegistrationController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'clinic_id' => 'required',
+			'patient_id' => 'required',
+			'officer_id' => 'required',
+			'number' => 'required',
+			'registered_at' => 'required',
 		]);
 
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$registration = new Registration();
-			$registration->name = $request->name;
+			$registration->clinic_id = $request->clinic_id;
+			$registration->patient_id = $request->patient_id;
+			$registration->officer_id = $request->officer_id;
+			$registration->number = $request->number;
+			$registration->registered_at = $request->registered_at;
 			$registration->save();
 
 			return response()->json(['success' => true, 'data' => $registration], 201);
@@ -50,7 +58,9 @@ class RegistrationController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'patient_id' => 'required',
+			'number' => 'required',
+			'registered_at' => 'required',
 		]);
 
 		if ($validator->fails()) { 
@@ -59,7 +69,10 @@ class RegistrationController extends Controller
 			$registration = Registration::find($id);
 
 			if ($registration) {
-				$registration->name = $request->name;
+				$registration->patient_id = $request->patient_id;
+				$registration->officer_id = $request->officer_id;
+				$registration->number = $request->number;
+				$registration->registered_at = $request->registered_at;
 				$registration->save();
 		
 				return response()->json(['success' => true, 'data' => $registration], 200);
