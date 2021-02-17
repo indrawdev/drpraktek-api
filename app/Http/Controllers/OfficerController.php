@@ -38,12 +38,12 @@ class OfficerController extends Controller
 
 	public function show($id)
 	{
-		$officer = Officer::findOrFail($id);
+		$officer = Officer::find($id);
 		
-		if ($officer->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($officer) {
+			return response()->json($officer, 200);
 		} else {
-			return response()->json(['data' => $officer], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
@@ -56,23 +56,27 @@ class OfficerController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$officer = Officer::findOrFail($id);
-			$officer->name = $request->name;
-			$officer->save();
-	
-			return response()->json(['success' => true, 'data' => $officer], 200);
+			$officer = Officer::find($id);
+
+			if ($officer) {
+				$officer->name = $request->name;
+				$officer->save();
+				return response()->json(['success' => true, 'data' => $officer], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$officer = Officer::findOrFail($id);
+		$officer = Officer::find($id);
 
-		if ($officer->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($officer) {
 			$officer->delete();
 			return response()->json(['success' => true, 'data' => $officer], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 }

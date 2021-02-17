@@ -29,6 +29,7 @@ class DoctorController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$doctor = new Doctor();
+			$doctor->clinic_id = $request->clinic_id;
 			$doctor->name = $request->name;
 			$doctor->save();
 
@@ -38,12 +39,12 @@ class DoctorController extends Controller
 
 	public function show($id)
 	{
-		$doctor = Doctor::findOrFail($id);
+		$doctor = Doctor::find($id);
 		
-		if ($doctor->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($doctor) {
+			return response()->json($doctor, 200);
 		} else {
-			return response()->json(['data' => $doctor], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
@@ -56,23 +57,27 @@ class DoctorController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$doctor = Doctor::findOrFail($id);
-			$doctor->name = $request->name;
-			$doctor->save();
-	
-			return response()->json(['success' => true, 'data' => $doctor], 200);
+			$doctor = Doctor::find($id);
+			
+			if ($doctor) {
+				$doctor->name = $request->name;
+				$doctor->save();
+				return response()->json(['success' => true, 'data' => $doctor], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$doctor = Doctor::findOrFail($id);
+		$doctor = Doctor::find($id);
 
-		if ($doctor->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($doctor) {
 			$doctor->delete();
 			return response()->json(['success' => true, 'data' => $doctor], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 }

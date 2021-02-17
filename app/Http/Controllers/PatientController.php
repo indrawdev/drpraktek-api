@@ -38,12 +38,12 @@ class PatientController extends Controller
 
 	public function show($id)
 	{
-		$patient = Patient::findOrFail($id);
+		$patient = Patient::find($id);
 		
-		if ($patient->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($patient) {
+			return response()->json($patient, 200);
 		} else {
-			return response()->json(['data' => $patient], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
@@ -56,23 +56,27 @@ class PatientController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$patient = Patient::findOrFail($id);
-			$patient->name = $request->name;
-			$patient->save();
-	
-			return response()->json(['success' => true, 'data' => $patient], 200);
+			$patient = Patient::find($id);
+			
+			if ($patient) {
+				$patient->name = $request->name;
+				$patient->save();
+				return response()->json(['success' => true, 'data' => $patient], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$patient = Patient::findOrFail($id);
+		$patient = Patient::find($id);
 
-		if ($patient->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($patient) {
 			$patient->delete();
 			return response()->json(['success' => true, 'data' => $patient], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 }

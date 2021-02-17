@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Clinic;
+use Illuminate\Support\Str;
 
 class ClinicController extends Controller
 {
@@ -22,14 +23,22 @@ class ClinicController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'user_id' => 'required',
+			'name' => 'required',
+			'address' => 'required',
+			'phone' => 'required',
 		]);
 
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$clinic = new Clinic();
+			$clinic->user_id = $request->user_id;
 			$clinic->name = $request->name;
+			$clinic->slug = Str::slug($request->name);
+			$clinic->address = $request->address;
+			$clinic->phone = $request->phone;
+			$clinic->email = $request->email;
 			$clinic->save();
 
 			return response()->json(['success' => true, 'data' => $clinic], 201);
@@ -38,41 +47,52 @@ class ClinicController extends Controller
 
 	public function show($id)
 	{
-		$clinic = Clinic::findOrFail($id);
+		$clinic = Clinic::find($id);
 
-		if ($clinic->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($clinic) {
+			return response()->json($clinic, 200);
 		} else {
-			return response()->json(['data' => $clinic], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'name' => 'required',
+			'address' => 'required',
+			'phone' => 'required',
 		]);
 
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$clinic = Clinic::findOrFail($id);
-			$clinic->name = $request->name;
-			$clinic->save();
+			$clinic = Clinic::find($id);
 
-			return response()->json(['success' => true, 'data' => $clinic], 200);
+			if ($clinic) {
+				$clinic->name = $request->name;
+				$clinic->slug = Str::slug($request->name);
+				$clinic->address = $request->address;
+				$clinic->phone = $request->phone;
+				$clinic->email = $request->email;
+				$clinic->save();
+
+				return response()->json(['success' => true, 'data' => $clinic], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$clinic = Clinic::findOrFail($id);
+		$clinic = Clinic::find($id);
 
-		if ($clinic->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($clinic) {
 			$clinic->delete();
 			return response()->json(['success' => true, 'data' => $clinic], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 

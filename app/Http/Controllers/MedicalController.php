@@ -48,44 +48,50 @@ class MedicalController extends Controller
 
 	public function show($id)
 	{
-		$medical = Medical::findOrFail($id);
+		$medical = Medical::find($id);
 
-		if ($medical->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($medical) {
+			return response()->json($medical, 200);
 		} else {
-			return response()->json(['data' => $medical], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'anamnesa' => 'required',
+			'diagnosis' => 'required'
 		]);
 
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$medical = Medical::findOrFail($id);
-			$medical->anamnesa = $request->anamnesa;
-			$medical->diagnosis = $request->diagnosis;
-			$medical->action = $request->action;
-			$medical->total = $request->total;
-			$medical->save();
-	
-			return response()->json(['success' => true, 'data' => $medical], 200);
+			$medical = Medical::find($id);
+
+			if ($medical) {
+				$medical->anamnesa = $request->anamnesa;
+				$medical->diagnosis = $request->diagnosis;
+				$medical->action = $request->action;
+				$medical->total = $request->total;
+				$medical->save();
+		
+				return response()->json(['success' => true, 'data' => $medical], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$medical = Medical::findOrFail($id);
+		$medical = Medical::find($id);
 
-		if ($medical->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($medical) {
 			$medical->delete();
 			return response()->json(['success' => true, 'data' => $medical], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 }

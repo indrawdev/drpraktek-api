@@ -38,12 +38,12 @@ class RegistrationController extends Controller
 
 	public function show($id)
 	{
-		$registration = Registration::findOrFail($id);
+		$registration = Registration::find($id);
 		
-		if ($registration->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
+		if ($registration) {
+			return response()->json($registration, 200);
 		} else {
-			return response()->json(['data' => $registration], 200);
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 
@@ -56,23 +56,28 @@ class RegistrationController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$registration = Registration::findOrFail($id);
-			$registration->name = $request->name;
-			$registration->save();
-	
-			return response()->json(['success' => true, 'data' => $registration], 200);
+			$registration = Registration::find($id);
+
+			if ($registration) {
+				$registration->name = $request->name;
+				$registration->save();
+		
+				return response()->json(['success' => true, 'data' => $registration], 200);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$registration = Registration::findOrFail($id);
+		$registration = Registration::find($id);
 
-		if ($registration->isEmpty()) {
-			return response()->json(['message' => 'Not Found'], 404);
-		} else {
+		if ($registration) {
 			$registration->delete();
 			return response()->json(['success' => true, 'data' => $registration], 200);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
 }
