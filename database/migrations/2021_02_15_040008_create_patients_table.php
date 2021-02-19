@@ -16,7 +16,7 @@ class CreatePatientsTable extends Migration
 		Schema::create('patients', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('clinic_id');
-			$table->foreignId('insurance_id')->nullable()->constrained();
+			$table->foreignId('insurance_id')->nullable();
 			$table->string('number');
 			$table->string('name');
 			$table->date('dob');

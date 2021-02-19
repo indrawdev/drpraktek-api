@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\LetterController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +14,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/letter/referral/{uuid}', [LetterController::class, 'referral'])->name('letter.referral');
+Route::get('/letter/health/{uuid}', [LetterController::class, 'health'])->name('letter.health');
+Route::get('/letter/sick/{uuid}', [LetterController::class, 'sick'])->name('letter.sick');
+Route::get('/letter/pregnant/{uuid}', [LetterController::class, 'pregnant'])->name('letter.pregnant');

@@ -24,7 +24,6 @@ class MedicalController extends Controller
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required',
 			'registration_id' => 'required',
-			'doctor_id' => 'required',
 			'patient_id' => 'required',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required'
@@ -36,12 +35,12 @@ class MedicalController extends Controller
 			$medical = new Medical();
 			$medical->clinic_id = $request->clinic_id;
 			$medical->registration_id = $request->registration_id;
-			$medical->doctor_id = $request->doctor_id;
 			$medical->patient_id = $request->patient_id;
 			$medical->anamnesa = $request->anamnesa;
 			$medical->diagnosis = $request->diagnosis;
 			$medical->action = $request->action;
 			$medical->total = $request->total;
+			$medical->confirmed = 0;
 			$medical->save();
 
 			return response()->json(['success' => true, 'data' => $medical], 201);
@@ -63,7 +62,8 @@ class MedicalController extends Controller
 	{
 		$validator = Validator::make($request->all(), [
 			'anamnesa' => 'required',
-			'diagnosis' => 'required'
+			'diagnosis' => 'required',
+			'total' => 'required'
 		]);
 
 		if ($validator->fails()) { 

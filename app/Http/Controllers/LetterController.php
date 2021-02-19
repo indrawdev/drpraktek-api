@@ -20,7 +20,7 @@ class LetterController extends Controller
 			return response()->json(['message' => 'Not Found'], 404);
 		}
 	}
-	
+
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
@@ -29,7 +29,7 @@ class LetterController extends Controller
 			'patient_id' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$letter = new Letter();
@@ -43,13 +43,19 @@ class LetterController extends Controller
 		}
 	}
 
+	public function show($id)
+	{
+
+	}
+
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required'
+			'doctor_id' => 'required',
+			'patient_id' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$letter = Letter::find($id);
@@ -74,27 +80,54 @@ class LetterController extends Controller
 		}
 	}
 
-	public function referral()
+	public function referral($uuid)
 	{
-		$pdf = PDF::loadView('prints.letters.referral');
-		return $pdf->stream();
+		$letter = Letter::where('uuid', $uuid)->first();
+		if ($letter) {
+			$pdf = PDF::loadView('prints.letters.referral', ['letter' => $letter]);
+			return $pdf->stream();
+		} else {
+			$pdf = PDF::loadView('prints.letters.referral');
+			return $pdf->stream();
+		}
+
 	}
 
-	public function health()
+	public function health($uuid)
 	{
-		$pdf = PDF::loadView('prints.letters.health');
-		return $pdf->stream();
+		$letter = Letter::where('uuid', $uuid)->first();
+
+		if ($letter) {
+			$pdf = PDF::loadView('prints.letters.health', ['letter' => $letter]);
+			return $pdf->stream();
+		} else {
+			$pdf = PDF::loadView('prints.letters.health');
+			return $pdf->stream();
+		}
+
 	}
 
-	public function sick()
+	public function sick($uuid)
 	{
-		$pdf = PDF::loadView('prints.letters.sick');
-		return $pdf->stream();
+		$letter = Letter::where('uuid', $uuid)->first();
+		if ($letter) {
+			$pdf = PDF::loadView('prints.letters.sick', ['letter' => $letter]);
+			return $pdf->stream();
+		} else {
+			$pdf = PDF::loadView('prints.letters.sick');
+			return $pdf->stream();
+		}
 	}
 
-	public function pregnant()
+	public function pregnant($uuid)
 	{
-		$pdf = PDF::loadView('prints.letters.pregnant');
-		return $pdf->stream();
+		$letter = Letter::where('uuid', $uuid)->first();
+		if ($letter) {
+			$pdf = PDF::loadView('prints.letters.pregnant', ['letter' => $letter]);
+			return $pdf->stream();
+		} else {
+			$pdf = PDF::loadView('prints.letters.pregnant');
+			return $pdf->stream();
+		}
 	}
 }

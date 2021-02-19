@@ -10,6 +10,7 @@ use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\MedicalController;
+use App\Http\Controllers\LetterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,5 +78,11 @@ Route::get('/medical/{id}', [MedicalController::class, 'show'])->name('medical')
 Route::post('/medical', [MedicalController::class, 'store'])->name('medical');
 Route::put('/medical/{id}', [MedicalController::class, 'update'])->name('medical');
 Route::delete('/medical/{id}', [MedicalController::class, 'destroy'])->name('medical');
+
+Route::get('/letters', [LetterController::class, 'index'])->name('letters');
+Route::get('/letter/{id}', [LetterController::class, 'show'])->name('letter');
+Route::post('/letter', [LetterController::class, 'store'])->name('letter');
+Route::put('/letter/{id}', [LetterController::class, 'update'])->name('letter');
+Route::delete('/letter/{id}', [LetterController::class, 'destroy'])->name('letter');
 
 });
