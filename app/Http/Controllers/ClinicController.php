@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Clinic;
 use Illuminate\Support\Str;
+use App\Models\Clinic;
+use App\Http\Resources\ClinicResource;
 
 class ClinicController extends Controller
 {
@@ -14,7 +15,7 @@ class ClinicController extends Controller
 		$clinics = Clinic::all();
 
 		if ($clinics->count() > 0) {
-			return response()->json(['data' => $clinics], 200);
+			return ClinicResource::collection($clinics);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -50,7 +51,7 @@ class ClinicController extends Controller
 		$clinic = Clinic::find($id);
 
 		if ($clinic) {
-			return response()->json($clinic, 200);
+			return new ClinicResource($clinic);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}

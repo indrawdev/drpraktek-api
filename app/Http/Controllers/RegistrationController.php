@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Registration;
+use App\Http\Resources\RegistrationResource;
 
 class RegistrationController extends Controller
 {
@@ -13,7 +14,7 @@ class RegistrationController extends Controller
 		$registrations = Registration::all();
 		
 		if ($registrations->count() > 0) {
-			return response()->json(['data' => $registrations], 200);
+			return RegistrationResource::collection($registrations);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -49,7 +50,7 @@ class RegistrationController extends Controller
 		$registration = Registration::find($id);
 		
 		if ($registration) {
-			return response()->json($registration, 200);
+			return new RegistrationResource($registration);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Letter;
 use Illuminate\Support\Str;
+use App\Models\Letter;
+use App\Http\Resources\LetterResource;
 use PDF;
 
 class LetterController extends Controller
@@ -15,7 +16,7 @@ class LetterController extends Controller
 		$letters = Letter::all();
 
 		if ($letters->count() > 0) {
-			return response()->json(['data' => $letters], 200);
+			return LetterResource::collection($letters);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -45,7 +46,13 @@ class LetterController extends Controller
 
 	public function show($id)
 	{
+		$letter = Letter::find($id);
 
+		if ($letter) {
+			return new LetterResource($letter);
+		} else {
+			return response()->json(['message' => 'Not Found'], 404);
+		}
 	}
 
 	public function update(Request $request, $id)

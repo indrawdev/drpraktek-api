@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Medical;
+use App\Http\Resources\MedicalResource;
 
 class MedicalController extends Controller
 {
@@ -13,7 +14,7 @@ class MedicalController extends Controller
 		$medicals = Medical::all();
 
 		if ($medicals->count() > 0) {
-			return response()->json(['data' => $medicals], 200);
+			return MedicalResource::collection($medicals);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -52,7 +53,7 @@ class MedicalController extends Controller
 		$medical = Medical::find($id);
 
 		if ($medical) {
-			return response()->json($medical, 200);
+			return new MedicalResource($medical);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}

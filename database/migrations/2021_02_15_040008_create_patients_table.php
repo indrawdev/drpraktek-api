@@ -21,9 +21,9 @@ class CreatePatientsTable extends Migration
 			$table->string('name');
 			$table->date('dob');
 			$table->enum('gender', ['PRIA', 'WANITA']);
-			$table->enum('blood', ['O', 'A', 'B', 'AB']);
-			$table->integer('height');
-			$table->integer('weight');
+			$table->enum('blood', ['O', 'A', 'B', 'AB'])->nullable();
+			$table->integer('height')->nullable();
+			$table->integer('weight')->nullable();
 			$table->text('address');
 			$table->string('phone');
 			$table->string('insurance_number')->nullable();

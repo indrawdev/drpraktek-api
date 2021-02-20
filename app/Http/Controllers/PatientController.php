@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Patient;
+use App\Http\Resources\PatientResource;
 
 class PatientController extends Controller
 {
@@ -13,7 +14,7 @@ class PatientController extends Controller
 		$patients = Patient::all();
 		
 		if ($patients->count() > 0) {
-			return response()->json(['data' => $patients], 200);
+			return PatientResource::collection($patients);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -57,7 +58,7 @@ class PatientController extends Controller
 		$patient = Patient::find($id);
 		
 		if ($patient) {
-			return response()->json($patient, 200);
+			return new PatientResource($patient);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}

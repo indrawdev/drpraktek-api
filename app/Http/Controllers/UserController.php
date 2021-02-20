@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
 		$users = User::all();
 
 		if ($users->count() > 0) {
-			return response()->json(['data' => $users], 200);
+			return UserResource::collection($users);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -44,7 +45,7 @@ class UserController extends Controller
 		$user = User::find($id);
 
 		if ($user) {
-			return response()->json($user, 200);
+			return new UserResource(User::findOrFail($id));
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}

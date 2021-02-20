@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Officer;
+use App\Http\Resources\OfficerResource;
 
 class OfficerController extends Controller
 {
@@ -13,7 +14,7 @@ class OfficerController extends Controller
 		$officers = Officer::all();
 
 		if ($officers->count() > 0) {
-			return response()->json(['data' => $officers], 200);
+			return OfficerResource::collection($officers);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
@@ -42,7 +43,7 @@ class OfficerController extends Controller
 		$officer = Officer::find($id);
 		
 		if ($officer) {
-			return response()->json($officer, 200);
+			return new OfficerResource($officer);
 		} else {
 			return response()->json(['message' => 'Not Found'], 404);
 		}
