@@ -18,9 +18,10 @@ class CreatePatientsTable extends Migration
 			$table->foreignId('clinic_id');
 			$table->foreignId('insurance_id')->nullable();
 			$table->string('number');
+			$table->string('identity')->nullable();
 			$table->string('name');
 			$table->date('dob');
-			$table->enum('gender', ['PRIA', 'WANITA']);
+			$table->enum('gender', ['LAKI-LAKI', 'PEREMPUAN']);
 			$table->enum('blood', ['O', 'A', 'B', 'AB'])->nullable();
 			$table->integer('height')->nullable();
 			$table->integer('weight')->nullable();

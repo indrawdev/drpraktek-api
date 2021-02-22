@@ -36,7 +36,7 @@
 			<td width="77%">{{ $letter->patient->address }}</td>
 		</tr>
 	</table>
-	<p>Berdasarkan hasil pemeriksaan yang telah dilakukan, pasien tersebut dalam keadaan <b>S A K I T</b>, sehingga perlu beristirahat selama ... hari, terhitung mulai tanggal ... s.d ...</p>
+	<p>Berdasarkan hasil pemeriksaan yang telah dilakukan, pasien tersebut dalam keadaan <b>S A K I T</b>, sehingga perlu beristirahat selama ... hari, terhitung mulai tanggal {{ $letter->start_at }} s.d {{ $letter->end_at }}</p>
 	<p>Demikian surat keterangan ini diberikan untuk diketahui dan dipergunakan seperlunya.</p>
 	<table width="100%">
 		<tr>

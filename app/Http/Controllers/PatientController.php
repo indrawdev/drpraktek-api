@@ -39,6 +39,7 @@ class PatientController extends Controller
 			$patient->insurance_id = $request->insurance_id;
 			$patient->name = $request->name;
 			$patient->number = $request->number;
+			$patient->identity = $request->identity;
 			$patient->dob = $request->dob;
 			$patient->gender = $request->gender;
 			$patient->blood = $request->blood;
@@ -83,6 +84,7 @@ class PatientController extends Controller
 				$patient->insurance_id = $request->insurance_id;
 				$patient->name = $request->name;
 				$patient->number = $request->number;
+				$patient->identity = $request->identity;
 				$patient->dob = $request->dob;
 				$patient->gender = $request->gender;
 				$patient->blood = $request->blood;
