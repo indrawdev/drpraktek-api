@@ -20,6 +20,8 @@ class CreateLettersTable extends Migration
 			$table->foreignId('doctor_id');
 			$table->foreignId('patient_id');
 			$table->string('number');
+			$table->date('start_at')->nullable();
+			$table->date('end_at')->nullable();
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 

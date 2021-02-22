@@ -5,6 +5,18 @@
 </head>
 
 <body>
+	<table width="100%">
+		<tr>
+			<td width="100%" align="center">
+				<b>{{ strtoupper($letter->clinic->name) }}</b>
+				<br>
+				<i><small>{{ $letter->clinic->address }}</small></i>
+				<br>
+				<i><small>phone : {{ $letter->clinic->phone }} - email : {{ $letter->clinic->email }}</small></i>
+			</td>
+		</tr>
+	</table>
+	<hr>
 	<h3 align="center">SURAT RUJUKAN</h3>
 	<table width="100%">
 		<tr>

@@ -22,6 +22,7 @@ class CreateClinicsTable extends Migration
 			$table->string('phone');
 			$table->string('email');
 			$table->string('logo')->nullable();
+			$table->string('siup')->nullable();
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 
