@@ -17,6 +17,7 @@ class CreateDoctorsTable extends Migration
 			$table->id();
 			$table->foreignId('clinic_id');
 			$table->string('name');
+			$table->string('slug');
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 		});

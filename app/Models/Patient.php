@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Patient extends Model
 {
@@ -15,9 +16,9 @@ class Patient extends Model
 		return $this->belongsTo('App\Models\Clinic');
 	}
 
-	public function insurances()
+	public function insurance()
 	{
-		return $this->hasMany('App\Models\Insurance');
+		return $this->belongsTo('App\Models\Insurance');
 	}
 
 	public function registers()
@@ -33,6 +34,11 @@ class Patient extends Model
 	public function letters()
 	{
 		return $this->hasMany('App\Models\Letter');
+	}
+
+	public function getAgeAttribute()
+	{
+		return Carbon::parse($this->attributes['dob'])->age;
 	}
 
 	public function setNumberAttribute($value)

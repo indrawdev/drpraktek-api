@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\DoctorResource;
+use App\Http\Resources\PatientResource;
 
 class ClinicResource extends JsonResource
 {
@@ -21,7 +24,8 @@ class ClinicResource extends JsonResource
 			'address' => $this->address,
 			'phone' => $this->phone,
 			'email' => $this->email,
-			'logo' => $this->logo
+			'logo' => $this->logo,
+			'user' => new UserResource($this->whenLoaded('user')),
 		];
 	}
 }

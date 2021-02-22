@@ -13,7 +13,7 @@ class LetterController extends Controller
 {
 	public function index()
 	{
-		$letters = Letter::all();
+		$letters = Letter::with(['doctor', 'patient'])->get();
 
 		if ($letters->count() > 0) {
 			return LetterResource::collection($letters);
@@ -46,7 +46,7 @@ class LetterController extends Controller
 
 	public function show($id)
 	{
-		$letter = Letter::find($id);
+		$letter = Letter::with(['clinic', 'doctor', 'patient'])->find($id);
 
 		if ($letter) {
 			return new LetterResource($letter);
@@ -102,7 +102,7 @@ class LetterController extends Controller
 
 	public function health($uuid)
 	{
-		$letter = Letter::where('uuid', $uuid)->first();
+		$letter = Letter::with(['patient', 'doctor'])->where('uuid', $uuid)->first();
 
 		if ($letter) {
 			$pdf = PDF::loadView('prints.letters.health', ['letter' => $letter]);

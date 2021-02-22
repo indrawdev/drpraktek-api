@@ -16,7 +16,8 @@ class CreateInsurancesTable extends Migration
 		Schema::create('insurances', function (Blueprint $table) {
 			$table->id();
 			$table->string('name');
-			$table->text('address');
+			$table->string('slug');
+			$table->text('address')->nullable();
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 		});

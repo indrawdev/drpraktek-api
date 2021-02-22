@@ -40,7 +40,7 @@ class OfficerController extends Controller
 
 	public function show($id)
 	{
-		$officer = Officer::find($id);
+		$officer = Officer::with('clinic')->find($id);
 		
 		if ($officer) {
 			return new OfficerResource($officer);

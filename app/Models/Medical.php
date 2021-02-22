@@ -20,7 +20,7 @@ class Medical extends Model
 		return $this->belongsTo('App\Models\Doctor');
 	}
 
-	public function register()
+	public function registration()
 	{
 		return $this->belongsTo('App\Models\Registration');
 	}
@@ -30,8 +30,9 @@ class Medical extends Model
 		return $this->belongsTo('App\Models\Patient');
 	}
 
-	public function fee()
+	public function fees()
 	{
-		return $this->belongsTo('App\Models\Fee');
+		return $this->belongsToMany('App\Models\Fee')->using('App\Models\MedicalFee');
 	}
+
 }

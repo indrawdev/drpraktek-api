@@ -17,17 +17,19 @@ class CreateMedicalsTable extends Migration
 			$table->id();
 			$table->foreignId('clinic_id');
 			$table->foreignId('registration_id');
+			$table->foreignId('doctor_id');
 			$table->foreignId('patient_id');
 			$table->string('anamnesa');
 			$table->string('diagnosis');
 			$table->string('action');
-			$table->decimal('total');
+			$table->decimal('total', 10);
 			$table->boolean('confirmed');
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');
 			$table->foreign('registration_id')->references('id')->on('registrations');
+			$table->foreign('doctor_id')->references('id')->on('doctors');
 			$table->foreign('patient_id')->references('id')->on('patients');
 		});
 	}

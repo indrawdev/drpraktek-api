@@ -15,14 +15,14 @@ class Letter extends Model
 		return $this->belongsTo('App\Models\Clinic');
 	}
 
-	public function patient()
-	{
-		return $this->belongsTo('App\Models\Patient');
-	}
-
 	public function doctor()
 	{
 		return $this->belongsTo('App\Models\Doctor');
+	}
+	
+	public function patient()
+	{
+		return $this->belongsTo('App\Models\Patient');
 	}
 
 	public function setNumberAttribute($value)

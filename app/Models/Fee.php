@@ -15,8 +15,8 @@ class Fee extends Model
 		return $this->belongsTo('App\Models\Clinic');
 	}
 
-	public function medicals()
+	public function medical()
 	{
-		return $this->hasMany('App\Models\Medical');
+		return $this->belongsToMany('App\Models\Medical')->using('App\Models\MedicalFee');
 	}
 }

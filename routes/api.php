@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\OfficerController;
+use App\Http\Controllers\InsuranceController;
+use App\Http\Controllers\FeeController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\MedicalController;
@@ -63,6 +65,18 @@ Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
 	Route::post('/officer', [OfficerController::class, 'store'])->name('officer');
 	Route::put('/officer/{id}', [OfficerController::class, 'update'])->name('officer');
 	Route::delete('/officer/{id}', [OfficerController::class, 'destroy'])->name('officer');
+
+	Route::get('/insurances', [InsuranceController::class, 'index'])->name('insurances');
+	Route::get('/insurance/{id}', [InsuranceController::class, 'show'])->name('insurance');
+	Route::post('/insurance', [InsuranceController::class, 'store'])->name('insurance');
+	Route::put('/insurance/{id}', [InsuranceController::class, 'update'])->name('insurance');
+	Route::delete('/insurance/{id}', [InsuranceController::class, 'destroy'])->name('insurance');
+
+	Route::get('/fees', [FeeController::class, 'index'])->name('fee');
+	Route::get('/fee/{id}', [FeeController::class, 'show'])->name('fee');
+	Route::post('/fee', [FeeController::class, 'store'])->name('fee');
+	Route::put('/fee/{id}', [FeeController::class, 'update'])->name('fee');
+	Route::delete('/fee/{id}', [FeeController::class, 'destroy'])->name('fee');
 
 	Route::get('/patients', [PatientController::class, 'index'])->name('patients');
 	Route::get('/patient/{id}', [PatientController::class, 'show'])->name('patient');

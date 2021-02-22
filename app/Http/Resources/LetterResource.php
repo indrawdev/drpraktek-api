@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ClinicResource;
+use App\Http\Resources\DoctorResource;
+use App\Http\Resources\PatientResource;
 
 class LetterResource extends JsonResource
 {
@@ -14,6 +17,11 @@ class LetterResource extends JsonResource
 	 */
 	public function toArray($request)
 	{
-		return parent::toArray($request);
+		return [
+			'id' => $this->id,
+			'client' => new ClinicResource($this->whenLoaded('client')),
+			'doctor' => new DoctorResource($this->whenLoaded('doctor')),
+			'patient' => new PatientResource($this->whenLoaded('patient'))
+		];
 	}
 }

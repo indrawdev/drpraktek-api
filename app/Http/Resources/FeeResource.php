@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ClinicResource;
-use App\Http\Resources\PatientResource;
 
-class AppointmentResource extends JsonResource
+class FeeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,9 +17,9 @@ class AppointmentResource extends JsonResource
     {
         return [
 					'id' => $this->id,
-					'appointment_at' => $this->appointment_at,
-					'clinic' => new ClinicResource($this->whenLoaded('clinic')),
-					'patient' => new PatientResource($this->whenLoaded('patient')),
+					'name' => $this->name,
+					'price' => $this->price,
+					'clinic' => new ClinicResource($this->whenLoaded('clinic'))
 				];
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use App\Models\Clinic;
 use App\Http\Resources\ClinicResource;
 
@@ -12,7 +11,7 @@ class ClinicController extends Controller
 {
 	public function index()
 	{
-		$clinics = Clinic::all();
+		$clinics = Clinic::with('user')->get();
 
 		if ($clinics->count() > 0) {
 			return ClinicResource::collection($clinics);
@@ -36,7 +35,7 @@ class ClinicController extends Controller
 			$clinic = new Clinic();
 			$clinic->user_id = $request->user_id;
 			$clinic->name = $request->name;
-			$clinic->slug = Str::slug($request->name);
+			$clinic->slug = $request->name;
 			$clinic->address = $request->address;
 			$clinic->phone = $request->phone;
 			$clinic->email = $request->email;
@@ -48,7 +47,7 @@ class ClinicController extends Controller
 
 	public function show($id)
 	{
-		$clinic = Clinic::find($id);
+		$clinic = Clinic::with(['user', 'doctors', 'patients', 'officers'])->find($id);
 
 		if ($clinic) {
 			return new ClinicResource($clinic);
@@ -72,7 +71,7 @@ class ClinicController extends Controller
 
 			if ($clinic) {
 				$clinic->name = $request->name;
-				$clinic->slug = Str::slug($request->name);
+				$clinic->slug = $request->name;
 				$clinic->address = $request->address;
 				$clinic->phone = $request->phone;
 				$clinic->email = $request->email;

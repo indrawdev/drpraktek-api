@@ -11,7 +11,7 @@ class RegistrationController extends Controller
 {
 	public function index()
 	{
-		$registrations = Registration::all();
+		$registrations = Registration::with(['patient', 'officer'])->get();
 		
 		if ($registrations->count() > 0) {
 			return RegistrationResource::collection($registrations);
@@ -47,7 +47,7 @@ class RegistrationController extends Controller
 
 	public function show($id)
 	{
-		$registration = Registration::find($id);
+		$registration = Registration::with(['clinic', 'patient', 'officer'])->find($id);
 		
 		if ($registration) {
 			return new RegistrationResource($registration);

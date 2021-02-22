@@ -11,12 +11,12 @@
 		<tr>
 			<td width="20%"><b>Nama</b></td>
 			<td width="3%">:</td>
-			<td width="77%">Indra Pramana</td>
+			<td width="77%">{{ $letter->patient->name }}</td>
 		</tr>
 		<tr>
 			<td width="20%"><b>Usia</b></td>
 			<td width="3%">:</td>
-			<td width="77%">33 tahun</td>
+			<td width="77%">{{ $letter->patient->age }} tahun</td>
 		</tr>
 		<tr>
 			<td width="20%"><b>Pekerjaan</b></td>
@@ -26,7 +26,7 @@
 		<tr>
 			<td width="20%"><b>Alamat</b></td>
 			<td width="3%">:</td>
-			<td width="77%">Jl. Banten No. 81, Jagakarsa, DKI Jakarta</td>
+			<td width="77%">{{ $letter->patient->address }}</td>
 		</tr>
 	</table>
 	<p>Berdasarkan hasil pemeriksaan yang telah dilakukan, pasien tersebut dalam keadaan <b>S A K I T</b>, sehingga perlu beristirahat selama ... hari, terhitung mulai tanggal ... s.d ...</p>

@@ -33,7 +33,7 @@
 			<td width="50%">ANDRI</td>
 			<td width="8%"><b>Umur</b></td>
 			<td width="2%">:</td>
-			<td width="20%">23</td>
+			<td width="20%">{{ $letter->patient->age }}</td>
 		</tr>
 		<tr>
 			<td width="18%"><b>No. Kartu BPJS</b></td>

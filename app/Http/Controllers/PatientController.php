@@ -55,7 +55,7 @@ class PatientController extends Controller
 
 	public function show($id)
 	{
-		$patient = Patient::find($id);
+		$patient = Patient::with(['clinic', 'insurance', 'registers', 'medicals', 'letters'])->find($id);
 		
 		if ($patient) {
 			return new PatientResource($patient);

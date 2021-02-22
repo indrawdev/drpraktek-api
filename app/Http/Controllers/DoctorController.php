@@ -32,6 +32,7 @@ class DoctorController extends Controller
 			$doctor = new Doctor();
 			$doctor->clinic_id = $request->clinic_id;
 			$doctor->name = $request->name;
+			$doctor->slug = $request->name;
 			$doctor->save();
 
 			return response()->json(['success' => true, 'data' => $doctor], 201);
@@ -40,7 +41,7 @@ class DoctorController extends Controller
 
 	public function show($id)
 	{
-		$doctor = Doctor::find($id);
+		$doctor = Doctor::with('clinic')->find($id);
 		
 		if ($doctor) {
 			return new DoctorResource($doctor);
@@ -62,6 +63,7 @@ class DoctorController extends Controller
 			
 			if ($doctor) {
 				$doctor->name = $request->name;
+				$doctor->slug = $request->name;
 				$doctor->save();
 				return response()->json(['success' => true, 'data' => $doctor], 200);
 			} else {
