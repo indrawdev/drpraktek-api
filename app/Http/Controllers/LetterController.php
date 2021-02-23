@@ -34,10 +34,14 @@ class LetterController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$letter = new Letter();
+			$letter->uuid = Str::uuid();
 			$letter->clinic_id = $request->clinic_id;
 			$letter->doctor_id = $request->doctor_id;
 			$letter->patient_id = $request->patient_id;
-			$letter->uuid = (string) Str::uuid();
+			$letter->number = $request->number;
+			$letter->start_at = $request->start_at;
+			$letter->end_at = $request->end_at;
+
 			$letter->save();
 
 			return response()->json(['success' => true, 'data' => $letter], 201);
@@ -68,6 +72,11 @@ class LetterController extends Controller
 			$letter = Letter::find($id);
 
 			if ($letter) {
+				$letter->doctor_id = $request->doctor_id;
+				$letter->patient_id = $request->patient_id;
+				$letter->start_at = $request->start_at;
+				$letter->end_at = $request->end_at;
+				$letter->save();
 				return response()->json(['success' => true, 'data' => $letter], 200);
 			} else {
 				return response()->json(['message' => 'Not Found'], 404);

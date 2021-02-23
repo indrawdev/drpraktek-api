@@ -30,23 +30,6 @@ class CreateLettersTable extends Migration
 			$table->foreign('patient_id')->references('id')->on('patients');
 		});
 
-		Schema::create('letters_sick', function (Blueprint $table) {
-			$table->id();
-			$table->foreignId('letter_id');
-			$table->date('start');
-			$table->date('end');
-
-			$table->foreign('letter_id')->references('id')->on('letters');
-		});
-
-		Schema::create('letters_pregnant', function (Blueprint $table) {
-			$table->id();
-			$table->foreignId('letter_id');
-			$table->date('start');
-			$table->date('end');
-
-			$table->foreign('letter_id')->references('id')->on('letters');
-		});
 	}
 
 	/**
@@ -57,7 +40,5 @@ class CreateLettersTable extends Migration
 	public function down()
 	{
 		Schema::dropIfExists('letters');
-		Schema::dropIfExists('letters_sick');
-		Schema::dropIfExists('letters_pregnant');
 	}
 }
