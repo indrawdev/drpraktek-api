@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Medical;
 use App\Models\MedicalFee;
 use App\Http\Resources\MedicalResource;
+use App\Mail\MedicalNotified;
 
 class MedicalController extends Controller
 {
@@ -46,6 +48,8 @@ class MedicalController extends Controller
 			$medical->total = $request->total;
 			$medical->confirmed = 0;
 			$medical->save();
+
+			Mail::to('indra@ide.web.id')->later(now()->addSeconds(15), new MedicalNotified($medical));
 
 			return response()->json(['success' => true, 'data' => $medical], 201);
 		}

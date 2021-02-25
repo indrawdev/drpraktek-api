@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Registration;
 use App\Http\Resources\RegistrationResource;
+use App\Mail\RegistrationNotified;
 
 class RegistrationController extends Controller
 {
@@ -40,6 +42,8 @@ class RegistrationController extends Controller
 			$registration->number = $request->number;
 			$registration->registered_at = $request->registered_at;
 			$registration->save();
+			
+			Mail::to('indra@ide.web.id')->later(now()->addSeconds(15), new RegistrationNotified($registration));
 
 			return response()->json(['success' => true, 'data' => $registration], 201);
 		}
