@@ -26,10 +26,10 @@ class MedicalController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'clinic_id' => 'required',
-			'registration_id' => 'required',
-			'patient_id' => 'required',
-			'doctor_id' => 'required',
+			'clinic_id' => 'required|exists:App\Models\Clinic,id',
+			'registration_id' => 'required|exists:App\Models\Registration,id',
+			'patient_id' => 'required|exists:App\Models\Patient,id',
+			'doctor_id' => 'required|exists:App\Models\Doctor,id',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required'
 		]);
@@ -69,7 +69,7 @@ class MedicalController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'doctor_id' => 'required',
+			'doctor_id' => 'required|exists:App\Models\Doctor,id',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required',
 			'total' => 'required'
@@ -110,8 +110,8 @@ class MedicalController extends Controller
 	public function fees(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'clinic_id' => 'required',
-			'medical_id' => 'required',
+			'clinic_id' => 'required|exists:App\Models\Clinic,id',
+			'medical_id' => 'required|exists:App\Models\Medical,id',
 			'fee_id' => 'required'
 		]);
 

@@ -25,9 +25,9 @@ class RegistrationController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'clinic_id' => 'required',
-			'patient_id' => 'required',
-			'officer_id' => 'required',
+			'clinic_id' => 'required|exists:App\Models\Clinic,id',
+			'patient_id' => 'required|exists:App\Models\Patient,id',
+			'officer_id' => 'required|exists:App\Models\Officer,id',
 			'number' => 'required',
 			'registered_at' => 'required',
 		]);
@@ -63,7 +63,8 @@ class RegistrationController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'patient_id' => 'required',
+			'patient_id' => 'required|exists:App\Models\Patient,id',
+			'officer_id' => 'required|exists:App\Models\Officer,id',
 			'number' => 'required',
 			'registered_at' => 'required',
 		]);

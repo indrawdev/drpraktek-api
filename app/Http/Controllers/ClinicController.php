@@ -23,7 +23,7 @@ class ClinicController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'user_id' => 'required',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'name' => 'required',
 			'address' => 'required',
 			'phone' => 'required',

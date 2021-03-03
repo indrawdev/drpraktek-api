@@ -23,9 +23,9 @@ class AppointmentController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'clinic_id' => 'required',
-			'patient_id' => 'required',
-			'officer_id' => 'required',
+			'clinic_id' => 'required|exists:App\Models\Clinic,id',
+			'patient_id' => 'required|exists:App\Models\Patient,id',
+			'officer_id' => 'required|exists:App\Models\Officer,id',
 			'appointment_at' => 'required',
 		]);
 
@@ -57,8 +57,8 @@ class AppointmentController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'patient_id' => 'required',
-			'officer_id' => 'required',
+			'patient_id' => 'required|exists:App\Models\Patient,id',
+			'officer_id' => 'required|exists:App\Models\Officer,id',
 			'appointment_at' => 'required',
 		]);
 

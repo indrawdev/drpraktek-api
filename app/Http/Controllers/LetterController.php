@@ -25,9 +25,9 @@ class LetterController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'clinic_id' => 'required',
-			'doctor_id' => 'required',
-			'patient_id' => 'required'
+			'clinic_id' => 'required|exists:App\Models\Clinic,id',
+			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'patient_id' => 'required|exists:App\Models\Patient,id'
 		]);
 
 		if ($validator->fails()) {
@@ -62,8 +62,8 @@ class LetterController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'doctor_id' => 'required',
-			'patient_id' => 'required'
+			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'patient_id' => 'required|exists:App\Models\Patient,id'
 		]);
 
 		if ($validator->fails()) {
