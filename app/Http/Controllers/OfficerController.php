@@ -16,7 +16,7 @@ class OfficerController extends Controller
 		if ($officers->count() > 0) {
 			return OfficerResource::collection($officers);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -46,7 +46,7 @@ class OfficerController extends Controller
 		if ($officer) {
 			return new OfficerResource($officer);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -66,7 +66,7 @@ class OfficerController extends Controller
 				$officer->save();
 				return response()->json(['success' => true, 'data' => $officer], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -79,7 +79,7 @@ class OfficerController extends Controller
 			$officer->delete();
 			return response()->json(['success' => true, 'data' => $officer], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

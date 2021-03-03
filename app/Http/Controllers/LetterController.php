@@ -18,7 +18,7 @@ class LetterController extends Controller
 		if ($letters->count() > 0) {
 			return LetterResource::collection($letters);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -55,7 +55,7 @@ class LetterController extends Controller
 		if ($letter) {
 			return new LetterResource($letter);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -79,7 +79,7 @@ class LetterController extends Controller
 				$letter->save();
 				return response()->json(['success' => true, 'data' => $letter], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ class LetterController extends Controller
 			$letter->delete();
 			return response()->json(['success' => true, 'data' => $letter], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 

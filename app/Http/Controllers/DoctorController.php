@@ -16,7 +16,7 @@ class DoctorController extends Controller
 		if ($doctors->count() > 0) {
 			return DoctorResource::collection($doctors);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -47,7 +47,7 @@ class DoctorController extends Controller
 		if ($doctor) {
 			return new DoctorResource($doctor);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -68,7 +68,7 @@ class DoctorController extends Controller
 				$doctor->save();
 				return response()->json(['success' => true, 'data' => $doctor], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ class DoctorController extends Controller
 			$doctor->delete();
 			return response()->json(['success' => true, 'data' => $doctor], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

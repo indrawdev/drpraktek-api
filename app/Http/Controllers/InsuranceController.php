@@ -16,7 +16,7 @@ class InsuranceController extends Controller
 		if ($insurances->count() > 0) {
 			return InsuranceResource::collection($insurances);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -46,7 +46,7 @@ class InsuranceController extends Controller
 		if ($insurance) {
 			return new InsuranceResource($insurance);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -68,7 +68,7 @@ class InsuranceController extends Controller
 				$insurance->save();
 				return response()->json(['success' => true, 'data' => $insurance], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ class InsuranceController extends Controller
 			$insurance->delete();
 			return response()->json(['success' => true, 'data' => $insurance], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

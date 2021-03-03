@@ -79,7 +79,7 @@ class ClinicController extends Controller
 
 				return response()->json(['success' => true, 'data' => $clinic], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ class ClinicController extends Controller
 			$clinic->delete();
 			return response()->json(['success' => true, 'data' => $clinic], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 

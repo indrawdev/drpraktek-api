@@ -18,7 +18,7 @@ class RegistrationController extends Controller
 		if ($registrations->count() > 0) {
 			return RegistrationResource::collection($registrations);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -56,7 +56,7 @@ class RegistrationController extends Controller
 		if ($registration) {
 			return new RegistrationResource($registration);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -83,7 +83,7 @@ class RegistrationController extends Controller
 		
 				return response()->json(['success' => true, 'data' => $registration], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -96,7 +96,7 @@ class RegistrationController extends Controller
 			$registration->delete();
 			return response()->json(['success' => true, 'data' => $registration], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

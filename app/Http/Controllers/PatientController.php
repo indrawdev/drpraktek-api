@@ -16,7 +16,7 @@ class PatientController extends Controller
 		if ($patients->count() > 0) {
 			return PatientResource::collection($patients);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -61,7 +61,7 @@ class PatientController extends Controller
 		if ($patient) {
 			return new PatientResource($patient);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -96,7 +96,7 @@ class PatientController extends Controller
 				$patient->save();
 				return response()->json(['success' => true, 'data' => $patient], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ class PatientController extends Controller
 			$patient->delete();
 			return response()->json(['success' => true, 'data' => $patient], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

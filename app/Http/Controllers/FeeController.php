@@ -17,7 +17,7 @@ class FeeController extends Controller
 		if ($fees->count() > 0) {
 			return FeeResource::collection($fees);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -49,7 +49,7 @@ class FeeController extends Controller
 		if ($fee) {
 			return new FeeResource($fee);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -68,7 +68,7 @@ class FeeController extends Controller
 			if ($fee) {
 				return response()->json(['success' => true, 'data' => $fee], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -81,7 +81,7 @@ class FeeController extends Controller
 			$fee->delete();
 			return response()->json(['success' => true, 'data' => $fee], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

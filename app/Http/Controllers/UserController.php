@@ -16,7 +16,7 @@ class UserController extends Controller
 		if ($users->count() > 0) {
 			return UserResource::collection($users);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -47,7 +47,7 @@ class UserController extends Controller
 		if ($user) {
 			return new UserResource(User::findOrFail($id));
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -67,7 +67,7 @@ class UserController extends Controller
 				$user->save();
 				return response()->json(['success' => true, 'data' => $user], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ class UserController extends Controller
 			$user->delete();
 			return response()->json(['success' => true, 'data' => $user], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

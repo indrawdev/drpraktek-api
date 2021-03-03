@@ -16,7 +16,7 @@ class AppointmentController extends Controller
 		if ($appointments->count() > 0) {
 			return AppointmentResource::collection($appointments);
 		} else {
-			return response()->json(['message' => 'Not Found'], 400);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -50,7 +50,7 @@ class AppointmentController extends Controller
 		if ($appointment) {
 			return new AppointmentResource($appointment);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -74,7 +74,7 @@ class AppointmentController extends Controller
 				$appointment->save();
 				return response()->json(['success' => true, 'data' => $appointment], 200);
 			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+				return response()->json(['error' => 'Not found'], 404);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ class AppointmentController extends Controller
 			$appointment->delete();
 			return response()->json(['success' => true, 'data' => $appointment], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 }

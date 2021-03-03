@@ -19,7 +19,7 @@ class MedicalController extends Controller
 		if ($medicals->count() > 0) {
 			return MedicalResource::collection($medicals);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -62,7 +62,7 @@ class MedicalController extends Controller
 		if ($medical) {
 			return new MedicalResource($medical);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -103,7 +103,7 @@ class MedicalController extends Controller
 			$medical->delete();
 			return response()->json(['success' => true, 'data' => $medical], 200);
 		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+			return response()->json(['error' => 'Not found'], 404);
 		}
 	}
 
@@ -112,7 +112,7 @@ class MedicalController extends Controller
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required|exists:App\Models\Clinic,id',
 			'medical_id' => 'required|exists:App\Models\Medical,id',
-			'fee_id' => 'required'
+			'fee_id' => 'required|exists:App\Models\Fee,id'
 		]);
 
 		if ($validator->fails()) { 
