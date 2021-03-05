@@ -4,8 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ClinicResource;
+use App\Http\Resources\RegistrationResource;
 use App\Http\Resources\DoctorResource;
 use App\Http\Resources\PatientResource;
+
 
 class MedicalResource extends JsonResource
 {
@@ -19,10 +21,14 @@ class MedicalResource extends JsonResource
 	{
 		return [
 			'id' => $this->id,
-			'anamnesa' => $this->anamnesa,
-			'clinic' => new ClinicResource($this->whenLoaded('clinic')),
+			'client' => new ClinicResource($this->whenLoaded('client')),
+			'registration' => new RegistrationResource($this->whenLoaded('registration')),
 			'doctor' => new DoctorResource($this->whenLoaded('doctor')),
 			'patient' => new PatientResource($this->whenLoaded('patient')),
+			'anamnesa' => $this->anamnesa,
+			'diagnosis' => $this->diagnosis,
+			'action' => $this->action,
+			'total' => $this->total
 		];
 	}
 }

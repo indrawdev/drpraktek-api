@@ -14,6 +14,7 @@ use App\Http\Controllers\LetterController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', [AuthController::class, 'index'])->name('/');
 
 Route::get('/letter/referral/{uuid}', [LetterController::class, 'referral'])->name('letter.referral');
 Route::get('/letter/health/{uuid}', [LetterController::class, 'health'])->name('letter.health');

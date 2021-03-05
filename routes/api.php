@@ -27,8 +27,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', [AuthController::class, 'index'])->name('/');
-
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
 	Route::post('/login', [AuthController::class, 'login'])->name('login');
 	Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
