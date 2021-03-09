@@ -38,7 +38,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
 
 Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
 
-// Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('/users', [UserController::class, 'index'])->name('users');
 	Route::get('/user/{id}', [UserController::class, 'show'])->name('user');
@@ -100,12 +100,8 @@ Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
 	Route::put('/letter/{id}', [LetterController::class, 'update'])->name('letter');
 	Route::delete('/letter/{id}', [LetterController::class, 'destroy'])->name('letter');
 
-// });
+});
 
 Route::middleware('auth:sanctum')->get('/user-profile', function (Request $request) {
 	return $request->user();
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-
 });

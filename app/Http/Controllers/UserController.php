@@ -23,7 +23,7 @@ class UserController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'email' => 'required|unique:App\Models\User,email',
+			'username' => 'required|unique:App\Models\User,username',
 			'password' => 'required'
 		]);
 
@@ -32,7 +32,7 @@ class UserController extends Controller
 		} else {
 
 			$user = new User();
-			$user->email = $request->email;
+			$user->username = $request->username;
 			$user->password = $request->password;
 			$user->save();
 

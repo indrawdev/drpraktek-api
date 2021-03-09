@@ -23,7 +23,7 @@ class ClinicController extends Controller
 	public function store(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'user_id' => 'required|exists:App\Models\User,id',
+			'email' => 'required|email',
 			'name' => 'required',
 			'address' => 'required',
 			'phone' => 'required',
@@ -33,12 +33,11 @@ class ClinicController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$clinic = new Clinic();
-			$clinic->user_id = $request->user_id;
+			$clinic->email = $request->email;
 			$clinic->name = $request->name;
 			$clinic->slug = $request->name;
 			$clinic->address = $request->address;
 			$clinic->phone = $request->phone;
-			$clinic->email = $request->email;
 			$clinic->save();
 
 			return response()->json(['success' => true, 'data' => $clinic], 201);

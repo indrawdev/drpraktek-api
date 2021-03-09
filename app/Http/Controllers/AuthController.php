@@ -23,40 +23,38 @@ class AuthController extends Controller
 		]);
 	}
 
-	/**
-	 * Get a JWT via given credentials.
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
 	public function login(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'email' => 'required|email',
+			'username' => 'required|string|exists:App\Models\User, username',
 			'password' => 'required|string|min:6',
+			'device_name' => 'required',
 		]);
 
 		if ($validator->fails()) {
 			return response()->json($validator->errors(), 422);
 		}
 
-		if (!$token = auth()->attempt($validator->validated())) {
-			return response()->json(['error' => 'Unauthorized'], 401);
+		$user = User::where('username', $request->username)->first();
+
+		if (!$user || !Hash::check($request->password, $user->password)) {
+			throw ValidationException::withMessages([
+				'username' => ['The provided credentials are incorrect.'],
+			]);
 		}
 
-		return $this->createNewToken($token);
+		return response()->json([
+			'user' => $user,
+			'token' => $user->createToken($request->device_name)->plainTextToken,
+		], 200);
 	}
 
-	/**
-	 * Register a User.
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
 	public function register(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'name' => 'required|string|between:2,100',
-			'email' => 'required|string|email|max:100|unique:users',
-			'password' => 'required|string|confirmed|min:6',
+			'username' => 'required|string|max:30|unique:users',
+			'password' => 'required|string|confirmed|min:6'
 		]);
 
 		if ($validator->fails()) {
@@ -74,36 +72,10 @@ class AuthController extends Controller
 		], 201);
 	}
 
-	public function signin(Request $request)
+	public function signout(Request $request)
 	{
-		$validator = Validator::make($request->all(), [
-			'email' => 'required|email',
-			'password' => 'required|string|min:6',
-		]);
-
-		if ($validator->fails()) {
-			return response()->json($validator->errors(), 422);
-		}
-
-		$user = User::where('email', $request->email)->first();
-
-		if (!$user || !Hash::check($request->password, $user->password)) {
-			throw ValidationException::withMessages([
-				'email' => ['The provided credentials are incorrect.'],
-			]);
-		}
-
-		return $user->createToken('mobile')->plainTextToken;
-	}
-
-	/**
-	 * Log the user out (Invalidate the token).
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	public function signout()
-	{
-		auth()->logout();
+		$user = $request->user();
+		$user->tokens()->delete();
 		return response()->json(['message' => 'User successfully signed out']);
 	}
 
@@ -112,9 +84,10 @@ class AuthController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function refresh()
+	public function refresh(Request $request)
 	{
-		return $this->createNewToken(auth()->refresh());
+    $token = $request->user()->createToken($request->token_name);
+    return ['token' => $token->plainTextToken];
 	}
 
 	/**
@@ -122,15 +95,15 @@ class AuthController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function profile()
+	public function profile(Request $request)
 	{
-		return response()->json(auth()->user());
+		return response()->json($request->user());
 	}
 
 	public function forgot(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'email' => 'required'
+			'username' => 'required'
 		]);
 
 		if ($validator->fails()) {
@@ -139,22 +112,5 @@ class AuthController extends Controller
 			$user = '';
 			return response()->json(['data' => $user], 200);
 		}
-	}
-
-	/**
-	 * Get the token array structure.
-	 *
-	 * @param  string $token
-	 *
-	 * @return \Illuminate\Http\JsonResponse
-	 */
-	protected function createNewToken($token)
-	{
-		return response()->json([
-			'access_token' => $token,
-			'token_type' => 'bearer',
-			'expires_in' => auth()->factory()->getTTL() * 60,
-			'user' => auth()->user()
-		]);
 	}
 }

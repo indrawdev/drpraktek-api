@@ -15,18 +15,15 @@ class CreateClinicsTable extends Migration
 	{
 		Schema::create('clinics', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('user_id');
+			$table->string('email')->unique();
 			$table->string('name');
 			$table->string('slug');
 			$table->text('address');
 			$table->string('phone');
-			$table->string('email');
 			$table->string('logo')->nullable();
 			$table->string('siup')->nullable();
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
-
-			$table->foreign('user_id')->references('id')->on('users');
 		});
 	}
 
