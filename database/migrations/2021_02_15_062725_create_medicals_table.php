@@ -17,7 +17,7 @@ class CreateMedicalsTable extends Migration
 			$table->id();
 			$table->foreignId('clinic_id');
 			$table->foreignId('registration_id');
-			$table->foreignId('doctor_id');
+			$table->foreignId('user_id');
 			$table->foreignId('patient_id');
 			$table->string('anamnesa');
 			$table->string('diagnosis');
@@ -29,7 +29,7 @@ class CreateMedicalsTable extends Migration
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');
 			$table->foreign('registration_id')->references('id')->on('registrations');
-			$table->foreign('doctor_id')->references('id')->on('doctors');
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->foreign('patient_id')->references('id')->on('patients');
 		});
 	}

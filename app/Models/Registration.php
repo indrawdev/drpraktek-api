@@ -15,14 +15,14 @@ class Registration extends Model
 		return $this->belongsTo('App\Models\Clinic');
 	}
 
+	public function user()
+	{
+		return $this->belongsTo('App\Models\User');
+	}
+
 	public function patient()
 	{
 		return $this->belongsTo('App\Models\Patient');
-	}
-
-	public function officer()
-	{
-		return $this->belongsTo('App\Models\Officer');
 	}
 
 	public function setNumberAttribute($value)

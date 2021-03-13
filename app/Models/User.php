@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -44,7 +45,7 @@ class User extends Authenticatable
 
 	public function setUsernameAttribute($value)
 	{
-		$this->attributes['username'] = $value;
+		$this->attributes['username'] = Str::upper($value);
 	}
 
 	public function roles()
@@ -55,6 +56,11 @@ class User extends Authenticatable
 	public function clinic()
 	{
 		return $this->belongsToMany('App\Models\Clinic')->using('App\Models\UserClinic');
+	}
+
+	public function profile()
+	{
+		return $this->hasOne('App\Models\Profile');
 	}
 
 }

@@ -14,9 +14,10 @@ class UserSeeder extends Seeder
 	 */
 	public function run()
 	{
-		User::create([
-			'email' => 'indra@ide.web.id',
-			'password' => bcrypt('123456')
+		User::insert([
+			['username' => 'superadmin', 'password' => bcrypt('12345678')],
+			['username' => 'dokter', 'password' => bcrypt('12345678')],
+			['username' => 'officer', 'password' => bcrypt('12345678')]
 		]);
 	}
 }

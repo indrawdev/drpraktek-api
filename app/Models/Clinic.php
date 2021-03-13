@@ -26,16 +26,6 @@ class Clinic extends Model
 		return $this->hasMany('App\Models\Registration');
 	}
 
-	public function doctors()
-	{
-		return $this->hasMany('App\Models\Doctor');
-	}
-
-	public function officers()
-	{
-		return $this->hasMany('App\Models\Officer');
-	}
-
 	public function patients()
 	{
 		return $this->hasMany('App\Models\Patient');

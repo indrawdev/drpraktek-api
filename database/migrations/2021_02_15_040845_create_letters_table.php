@@ -17,7 +17,7 @@ class CreateLettersTable extends Migration
 			$table->id();
 			$table->uuid('uuid');
 			$table->foreignId('clinic_id');
-			$table->foreignId('doctor_id');
+			$table->foreignId('user_id');
 			$table->foreignId('patient_id');
 			$table->string('number');
 			$table->date('start_at')->nullable();
@@ -26,7 +26,7 @@ class CreateLettersTable extends Migration
 			$table->softDeletes('deleted_at', 0);
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');
-			$table->foreign('doctor_id')->references('id')->on('doctors');
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->foreign('patient_id')->references('id')->on('patients');
 		});
 

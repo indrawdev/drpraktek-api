@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
 	public function __construct()
 	{
-		//$this->middleware('auth:api', ['except' => ['login', 'register']]);
+		$this->middleware('auth:api', ['except' => ['login']]);
 	}
 
 	public function index()
@@ -26,7 +26,7 @@ class AuthController extends Controller
 	public function login(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'username' => 'required|string|exists:App\Models\User, username',
+			'username' => 'required|string',
 			'password' => 'required|string|min:6',
 			'device_name' => 'required',
 		]);
@@ -47,29 +47,6 @@ class AuthController extends Controller
 			'user' => $user,
 			'token' => $user->createToken($request->device_name)->plainTextToken,
 		], 200);
-	}
-
-	public function register(Request $request)
-	{
-		$validator = Validator::make($request->all(), [
-			'name' => 'required|string|between:2,100',
-			'username' => 'required|string|max:30|unique:users',
-			'password' => 'required|string|confirmed|min:6'
-		]);
-
-		if ($validator->fails()) {
-			return response()->json($validator->errors()->toJson(), 400);
-		}
-
-		$user = User::create(array_merge(
-			$validator->validated(),
-			['password' => bcrypt($request->password)]
-		));
-
-		return response()->json([
-			'message' => 'User successfully registered',
-			'user' => $user
-		], 201);
 	}
 
 	public function signout(Request $request)

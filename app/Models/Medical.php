@@ -15,9 +15,9 @@ class Medical extends Model
 		return $this->belongsTo('App\Models\Clinic');
 	}
 
-	public function doctor()
+	public function user()
 	{
-		return $this->belongsTo('App\Models\Doctor');
+		return $this->belongsTo('App\Models\User');
 	}
 
 	public function registration()

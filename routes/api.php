@@ -27,10 +27,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
+Route::group(['prefix' => 'auth'], function () {
 	Route::post('/login', [AuthController::class, 'login'])->name('login');
 	Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
-	Route::post('/register', [AuthController::class, 'register'])->name('register');
 	Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
 	Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 	Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
@@ -51,18 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('/clinic', [ClinicController::class, 'store'])->name('clinic');
 	Route::put('/clinic/{id}', [ClinicController::class, 'update'])->name('clinic');
 	Route::delete('/clinic/{id}', [ClinicController::class, 'destroy'])->name('clinic');
-
-	Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors');
-	Route::get('/doctor/{id}', [DoctorController::class, 'show'])->name('doctor');
-	Route::post('/doctor', [DoctorController::class, 'store'])->name('doctor');
-	Route::put('/doctor/{id}', [DoctorController::class, 'update'])->name('doctor');
-	Route::delete('/doctor/{id}', [DoctorController::class, 'destroy'])->name('doctor');
-
-	Route::get('/officers', [OfficerController::class, 'index'])->name('officers');
-	Route::get('/officer/{id}', [OfficerController::class, 'show'])->name('officer');
-	Route::post('/officer', [OfficerController::class, 'store'])->name('officer');
-	Route::put('/officer/{id}', [OfficerController::class, 'update'])->name('officer');
-	Route::delete('/officer/{id}', [OfficerController::class, 'destroy'])->name('officer');
 
 	Route::get('/insurances', [InsuranceController::class, 'index'])->name('insurances');
 	Route::get('/insurance/{id}', [InsuranceController::class, 'show'])->name('insurance');

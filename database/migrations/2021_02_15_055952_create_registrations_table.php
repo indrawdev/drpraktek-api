@@ -16,16 +16,16 @@ class CreateRegistrationsTable extends Migration
 		Schema::create('registrations', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('clinic_id');
+			$table->foreignId('user_id');
 			$table->foreignId('patient_id');
-			$table->foreignId('officer_id');
 			$table->string('number');
 			$table->dateTime('registered_at', 0);
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');
+			$table->foreign('user_id')->references('id')->on('users');
 			$table->foreign('patient_id')->references('id')->on('patients');
-			$table->foreign('officer_id')->references('id')->on('officers');
 		});
 	}
 

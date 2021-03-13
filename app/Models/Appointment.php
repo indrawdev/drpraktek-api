@@ -20,8 +20,8 @@ class Appointment extends Model
 		return $this->belongsTo('App\Models\Patient');
 	}
 
-	public function officer()
+	public function user()
 	{
-		return $this->belongsTo('App\Models\Officer');
+		return $this->belongsTo('App\Models\User');
 	}
 }
