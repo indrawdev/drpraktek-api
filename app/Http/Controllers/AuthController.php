@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -28,23 +29,24 @@ class AuthController extends Controller
 		$validator = Validator::make($request->all(), [
 			'username' => 'required|string',
 			'password' => 'required|string|min:6',
-			'device_name' => 'required',
+			'device_name' => 'required|string',
 		]);
 
 		if ($validator->fails()) {
 			return response()->json($validator->errors(), 422);
 		}
 
-		$user = User::where('username', $request->username)->first();
+		$user = User::with(['profile', 'roles', 'clinics'])->where('username', $request->username)->first();
 
 		if (!$user || !Hash::check($request->password, $user->password)) {
-			throw ValidationException::withMessages([
-				'username' => ['The provided credentials are incorrect.'],
-			]);
+			return response()->json([
+				'error' => 'Incorrect user'
+			], 404);
 		}
 
 		return response()->json([
-			'user' => $user,
+			'user' => new UserResource($user),
+			// 'data' => $user,
 			'token' => $user->createToken($request->device_name)->plainTextToken,
 		], 200);
 	}
@@ -72,9 +74,9 @@ class AuthController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function profile(Request $request)
+	public function profile()
 	{
-		return response()->json($request->user());
+		return response()->json();
 	}
 
 	public function forgot(Request $request)

@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ProfileResource;
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\ClinicResource;
 
 class UserResource extends JsonResource
 {
@@ -16,8 +19,10 @@ class UserResource extends JsonResource
 	{
 		return [
 			'id' => $this->id,
-			'name' => $this->name,
-			'email' => $this->email
+			'username' => $this->username,
+			'roles' => RoleResource::collection($this->whenLoaded('roles')),
+			'profile' => new ProfileResource($this->whenLoaded('profile')),
+			'clinics' => ClinicResource::collection($this->whenLoaded('clinics')),
 		];
 	}
 }

@@ -19,7 +19,6 @@ class User extends Authenticatable
 	 * @var array
 	 */
 	protected $fillable = [
-		'name',
 		'username',
 		'password',
 	];
@@ -31,7 +30,7 @@ class User extends Authenticatable
 	 */
 	protected $hidden = [
 		'password',
-		'remember_token',
+		'remember_token'
 	];
 
 	/**
@@ -53,9 +52,9 @@ class User extends Authenticatable
 		return $this->belongsToMany('App\Models\Role')->using('App\Models\RoleUser');
 	}
 
-	public function clinic()
+	public function clinics()
 	{
-		return $this->belongsToMany('App\Models\Clinic')->using('App\Models\UserClinic');
+		return $this->belongsToMany('App\Models\Clinic', 'user_clinic');
 	}
 
 	public function profile()

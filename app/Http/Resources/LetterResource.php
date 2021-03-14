@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ClinicResource;
-use App\Http\Resources\DoctorResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\PatientResource;
 
 class LetterResource extends JsonResource
@@ -20,7 +20,7 @@ class LetterResource extends JsonResource
 		return [
 			'id' => $this->id,
 			'client' => new ClinicResource($this->whenLoaded('client')),
-			'doctor' => new DoctorResource($this->whenLoaded('doctor')),
+			'user' => new UserResource($this->whenLoaded('user')),
 			'patient' => new PatientResource($this->whenLoaded('patient'))
 		];
 	}
