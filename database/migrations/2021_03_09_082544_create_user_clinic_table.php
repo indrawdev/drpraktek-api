@@ -21,7 +21,7 @@ class CreateUserClinicTable extends Migration
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('clinic_id')->references('id')->on('clinics')->onDelete('cascade');
 
-			$table->primary(['user_id']);
+			$table->primary(['user_id', 'clinic_id']);
 		});
 	}
 

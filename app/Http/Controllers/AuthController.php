@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 
@@ -13,18 +12,18 @@ class AuthController extends Controller
 {
 	public function __construct()
 	{
-		$this->middleware('auth:api', ['except' => ['login']]);
+		$this->middleware('auth:sanctum', ['except' => ['login']]);
 	}
 
 	public function index()
 	{
 		return response()->json([
 			'error' => false,
-			'message' => 'Consume API please contact me'
+			'message' => 'Consume API please contact me at indra@ide.web.id'
 		]);
 	}
 
-	public function login(Request $request)
+	public function signin(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'username' => 'required|string',

@@ -21,3 +21,4 @@ Route::get('/letter/referral/{uuid}', [LetterController::class, 'referral'])->na
 Route::get('/letter/health/{uuid}', [LetterController::class, 'health'])->name('letter.health');
 Route::get('/letter/sick/{uuid}', [LetterController::class, 'sick'])->name('letter.sick');
 Route::get('/letter/pregnant/{uuid}', [LetterController::class, 'pregnant'])->name('letter.pregnant');
+Route::get('/letter/informedconcent/{uuid}', [LetterController::class, 'informedconcent'])->name('letter.informedconcent');

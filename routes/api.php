@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClinicController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\OfficerController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\FeeController;
 use App\Http\Controllers\PatientController;
@@ -28,16 +27,15 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix' => 'auth'], function () {
-	Route::post('/login', [AuthController::class, 'login'])->name('login');
 	Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
 	Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
 	Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 	Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 });
 
-Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
-
 Route::middleware('auth:sanctum')->group(function () {
+
+	Route::post('/register', [RegisterController::class, 'store'])->name('register');
 
 	Route::get('/users', [UserController::class, 'index'])->name('users');
 	Route::get('/user/{id}', [UserController::class, 'show'])->name('user');

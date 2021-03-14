@@ -13,7 +13,7 @@ class LetterController extends Controller
 {
 	public function index()
 	{
-		$letters = Letter::with(['doctor', 'patient'])->get();
+		$letters = Letter::with(['user', 'patient'])->get();
 
 		if ($letters->count() > 0) {
 			return LetterResource::collection($letters);
@@ -26,7 +26,7 @@ class LetterController extends Controller
 	{
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required|exists:App\Models\Clinic,id',
-			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'patient_id' => 'required|exists:App\Models\Patient,id'
 		]);
 
@@ -36,7 +36,7 @@ class LetterController extends Controller
 			$letter = new Letter();
 			$letter->uuid = Str::uuid();
 			$letter->clinic_id = $request->clinic_id;
-			$letter->doctor_id = $request->doctor_id;
+			$letter->user_id = $request->user_id;
 			$letter->patient_id = $request->patient_id;
 			$letter->number = $request->number;
 			$letter->start_at = $request->start_at;
@@ -50,7 +50,7 @@ class LetterController extends Controller
 
 	public function show($id)
 	{
-		$letter = Letter::with(['clinic', 'doctor', 'patient'])->find($id);
+		$letter = Letter::with(['clinic', 'user', 'patient'])->find($id);
 
 		if ($letter) {
 			return new LetterResource($letter);
@@ -62,7 +62,7 @@ class LetterController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'patient_id' => 'required|exists:App\Models\Patient,id'
 		]);
 
@@ -72,7 +72,7 @@ class LetterController extends Controller
 			$letter = Letter::find($id);
 
 			if ($letter) {
-				$letter->doctor_id = $request->doctor_id;
+				$letter->user_id = $request->user_id;
 				$letter->patient_id = $request->patient_id;
 				$letter->start_at = $request->start_at;
 				$letter->end_at = $request->end_at;
@@ -143,6 +143,18 @@ class LetterController extends Controller
 			return $pdf->stream();
 		} else {
 			$pdf = PDF::loadView('prints.letters.pregnant');
+			return $pdf->stream();
+		}
+	}
+
+	public function informedconcent($uuid)
+	{
+		$letter = Letter::where('uuid', $uuid)->first();
+		if ($letter) {
+			$pdf = PDF::loadView('prints.letters.informedconcent', ['letter' => $letter]);
+			return $pdf->stream();
+		} else {
+			$pdf = PDF::loadView('prints.letters.informedconcent');
 			return $pdf->stream();
 		}
 	}
