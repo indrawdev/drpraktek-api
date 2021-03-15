@@ -14,4 +14,5 @@ class Drug extends Model
 	{
 		return $this->belongsTo('App\Models\Clinic');
 	}
+
 }

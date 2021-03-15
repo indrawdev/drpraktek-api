@@ -4,16 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Registration;
 use App\Http\Resources\RegistrationResource;
-use App\Mail\RegistrationNotified;
 
 class RegistrationController extends Controller
 {
 	public function index()
 	{
-		$registrations = Registration::with(['patient', 'officer'])->get();
+		$registrations = Registration::with(['patient', 'user'])->get();
 		
 		if ($registrations->count() > 0) {
 			return RegistrationResource::collection($registrations);
@@ -27,7 +25,7 @@ class RegistrationController extends Controller
 		$validator = Validator::make($request->all(), [
 			'clinic_id' => 'required|exists:App\Models\Clinic,id',
 			'patient_id' => 'required|exists:App\Models\Patient,id',
-			'officer_id' => 'required|exists:App\Models\Officer,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'number' => 'required',
 			'registered_at' => 'required',
 		]);
@@ -38,12 +36,10 @@ class RegistrationController extends Controller
 			$registration = new Registration();
 			$registration->clinic_id = $request->clinic_id;
 			$registration->patient_id = $request->patient_id;
-			$registration->officer_id = $request->officer_id;
+			$registration->user_id = $request->user_id;
 			$registration->number = $request->number;
 			$registration->registered_at = $request->registered_at;
 			$registration->save();
-			
-			Mail::to('indra@ide.web.id')->later(now()->addSeconds(15), new RegistrationNotified($registration));
 
 			return response()->json(['success' => true, 'data' => $registration], 201);
 		}
@@ -51,7 +47,7 @@ class RegistrationController extends Controller
 
 	public function show($id)
 	{
-		$registration = Registration::with(['clinic', 'patient', 'officer'])->find($id);
+		$registration = Registration::with(['clinic', 'patient', 'user'])->find($id);
 		
 		if ($registration) {
 			return new RegistrationResource($registration);
@@ -64,7 +60,7 @@ class RegistrationController extends Controller
 	{
 		$validator = Validator::make($request->all(), [
 			'patient_id' => 'required|exists:App\Models\Patient,id',
-			'officer_id' => 'required|exists:App\Models\Officer,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'number' => 'required',
 			'registered_at' => 'required',
 		]);
@@ -76,7 +72,7 @@ class RegistrationController extends Controller
 
 			if ($registration) {
 				$registration->patient_id = $request->patient_id;
-				$registration->officer_id = $request->officer_id;
+				$registration->user_id = $request->user_id;
 				$registration->number = $request->number;
 				$registration->registered_at = $request->registered_at;
 				$registration->save();

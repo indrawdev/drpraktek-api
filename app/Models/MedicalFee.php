@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MedicalFee extends Pivot
 {
-	use HasFactory;
-
+	protected $table = 'role_user';
+	
 	public function medical()
 	{
 		return $this->belongsTo('App\Models\Medical');

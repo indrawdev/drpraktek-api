@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\ClinicResource;
 
-class FeeResource extends JsonResource
+class DrugResource extends JsonResource
 {
 	/**
 	 * Transform the resource into an array.
@@ -18,8 +17,7 @@ class FeeResource extends JsonResource
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
-			'price' => $this->price,
-			'clinic' => new ClinicResource($this->whenLoaded('clinic'))
+			'price' => $this->price
 		];
 	}
 }

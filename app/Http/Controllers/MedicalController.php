@@ -4,17 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Medical;
 use App\Models\MedicalFee;
 use App\Http\Resources\MedicalResource;
-use App\Mail\MedicalNotified;
 
 class MedicalController extends Controller
 {
 	public function index()
 	{
-		$medicals = Medical::with(['patient', 'doctor'])->get();
+		$medicals = Medical::with(['patient', 'user'])->get();
 
 		if ($medicals->count() > 0) {
 			return MedicalResource::collection($medicals);
@@ -29,7 +27,7 @@ class MedicalController extends Controller
 			'clinic_id' => 'required|exists:App\Models\Clinic,id',
 			'registration_id' => 'required|exists:App\Models\Registration,id',
 			'patient_id' => 'required|exists:App\Models\Patient,id',
-			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required'
 		]);
@@ -41,15 +39,13 @@ class MedicalController extends Controller
 			$medical->clinic_id = $request->clinic_id;
 			$medical->registration_id = $request->registration_id;
 			$medical->patient_id = $request->patient_id;
-			$medical->doctor_id = $request->doctor_id;
+			$medical->user_id = $request->user_id;
 			$medical->anamnesa = $request->anamnesa;
 			$medical->diagnosis = $request->diagnosis;
 			$medical->action = $request->action;
-			$medical->total = $request->total;
+			$medical->grand_total = $request->grand_total;
 			$medical->confirmed = 0;
 			$medical->save();
-
-			Mail::to('indra@ide.web.id')->later(now()->addSeconds(15), new MedicalNotified($medical));
 
 			return response()->json(['success' => true, 'data' => $medical], 201);
 		}
@@ -69,10 +65,10 @@ class MedicalController extends Controller
 	public function update(Request $request, $id)
 	{
 		$validator = Validator::make($request->all(), [
-			'doctor_id' => 'required|exists:App\Models\Doctor,id',
+			'user_id' => 'required|exists:App\Models\User,id',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required',
-			'total' => 'required'
+			'grand_total' => 'required'
 		]);
 
 		if ($validator->fails()) { 
@@ -85,7 +81,7 @@ class MedicalController extends Controller
 				$medical->anamnesa = $request->anamnesa;
 				$medical->diagnosis = $request->diagnosis;
 				$medical->action = $request->action;
-				$medical->total = $request->total;
+				$medical->grand_total = $request->grand_total;
 				$medical->save();
 		
 				return response()->json(['success' => true, 'data' => $medical], 200);

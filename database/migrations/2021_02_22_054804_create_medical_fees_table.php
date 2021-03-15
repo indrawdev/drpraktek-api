@@ -18,6 +18,9 @@ class CreateMedicalFeesTable extends Migration
 			$table->foreignId('clinic_id');
 			$table->foreignId('medical_id');
 			$table->foreignId('fee_id');
+			$table->string('name');
+			$table->integer('qty');
+			$table->decimal('total');
 			$table->timestamps();
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');

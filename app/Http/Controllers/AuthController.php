@@ -23,7 +23,7 @@ class AuthController extends Controller
 		]);
 	}
 
-	public function signin(Request $request)
+	public function login(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'username' => 'required|string',
@@ -50,11 +50,11 @@ class AuthController extends Controller
 		], 200);
 	}
 
-	public function signout(Request $request)
+	public function logout(Request $request)
 	{
 		$user = $request->user();
 		$user->tokens()->delete();
-		return response()->json(['message' => 'User successfully signed out']);
+		return response()->json(['message' => 'User successfully logout']);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class AuthController extends Controller
 	 */
 	public function profile()
 	{
-		return response()->json();
+		return response(['data' => ''])->json();
 	}
 
 	public function forgot(Request $request)

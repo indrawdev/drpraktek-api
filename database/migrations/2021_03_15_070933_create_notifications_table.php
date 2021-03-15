@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRequestsTable extends Migration
+class CreateNotificationsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,15 +13,13 @@ class CreateRequestsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('requests', function (Blueprint $table) {
-			$table->id();
-			$table->string('name');
-			$table->string('clinic');
-			$table->string('address');
-			$table->string('email');
-			$table->string('phone');
+		Schema::create('notifications', function (Blueprint $table) {
+			$table->uuid('id')->primary();
+			$table->string('type');
+			$table->morphs('notifiable');
+			$table->text('data');
+			$table->timestamp('read_at')->nullable();
 			$table->timestamps();
-			$table->softDeletes('deleted_at', 0);
 		});
 	}
 
@@ -32,6 +30,6 @@ class CreateRequestsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('requests');
+		Schema::dropIfExists('notifications');
 	}
 }

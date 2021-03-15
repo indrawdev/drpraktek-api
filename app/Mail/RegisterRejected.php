@@ -6,27 +6,20 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Medical;
+use App\Models\Register;
 
-class MedicalNotified extends Mailable implements ShouldQueue
+class RegisterRejected extends Mailable implements ShouldQueue
 {
 	use Queueable, SerializesModels;
-
-	/**
-	 * The order instance.
-	 *
-	 * @var \App\Models\Medical
-	 */
-	public $medical;
 
 	/**
 	 * Create a new message instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(Medical $medical)
+	public function __construct(Register $register)
 	{
-		$this->medical = $medical;
+		$this->register = $register;
 	}
 
 	/**
@@ -36,6 +29,6 @@ class MedicalNotified extends Mailable implements ShouldQueue
 	 */
 	public function build()
 	{
-		return $this->markdown('emails.notifications.medical');
+		return $this->markdown('emails.register.rejected');
 	}
 }

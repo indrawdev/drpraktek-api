@@ -15,6 +15,7 @@ class CreateClinicsTable extends Migration
 	{
 		Schema::create('clinics', function (Blueprint $table) {
 			$table->id();
+			$table->uuid('uuid');
 			$table->string('email')->unique();
 			$table->string('name');
 			$table->string('slug');

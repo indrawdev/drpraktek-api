@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use App\Models\Clinic;
 use App\Http\Resources\ClinicResource;
 
@@ -11,7 +12,7 @@ class ClinicController extends Controller
 {
 	public function index()
 	{
-		$clinics = Clinic::with('user')->get();
+		$clinics = Clinic::with('users')->get();
 
 		if ($clinics->count() > 0) {
 			return ClinicResource::collection($clinics);
@@ -33,6 +34,7 @@ class ClinicController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$clinic = new Clinic();
+			$clinic->uuid = Str::uuid();
 			$clinic->email = $request->email;
 			$clinic->name = $request->name;
 			$clinic->slug = $request->name;
@@ -46,7 +48,7 @@ class ClinicController extends Controller
 
 	public function show($id)
 	{
-		$clinic = Clinic::with(['user', 'doctors', 'patients', 'officers'])->find($id);
+		$clinic = Clinic::with(['users', 'patients'])->find($id);
 
 		if ($clinic) {
 			return new ClinicResource($clinic);
@@ -93,10 +95,5 @@ class ClinicController extends Controller
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
-	}
-
-	public function getRouteKeyName()
-	{
-		return 'slug';
 	}
 }
