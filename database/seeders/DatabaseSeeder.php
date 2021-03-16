@@ -18,8 +18,14 @@ class DatabaseSeeder extends Seeder
 			RoleSeeder::class,
 			UserSeeder::class,
 			RoleUserSeeder::class,
-			UserClinicSeeder::class,
+			ClinicUserSeeder::class,
 			ProfileSeeder::class,
+			PatientSeeder::class,
+			DrugSeeder::class,
+			FeeSeeder::class,
+			RegistrationSeeder::class,
+			MedicalSeeder::class,
+			LetterSeeder::class
 		]);
 	}
 }

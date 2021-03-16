@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserClinicTable extends Migration
+class CreateClinicUserTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,8 +13,7 @@ class CreateUserClinicTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('user_clinic', function (Blueprint $table) {
-
+		Schema::create('clinic_user', function (Blueprint $table) {
 			$table->unsignedBigInteger('user_id');
 			$table->unsignedBigInteger('clinic_id');
 
@@ -32,6 +31,6 @@ class CreateUserClinicTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('user_clinic');
+		Schema::dropIfExists('clinic_user');
 	}
 }

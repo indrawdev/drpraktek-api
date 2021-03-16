@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('/user', [UserController::class, 'store']);
 	Route::put('/user/{id}', [UserController::class, 'update']);
 	Route::delete('/user/{id}', [UserController::class, 'destroy']);
+	Route::post('/user/reset', [UserController::class, 'reset']);
 
 	Route::get('/clinics', [ClinicController::class, 'index'])->name('clinics');
 	Route::get('/clinic/{id}', [ClinicController::class, 'show']);

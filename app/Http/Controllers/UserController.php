@@ -38,16 +38,16 @@ class UserController extends Controller
 			$user->password = $request->password;
 			$user->save();
 
-			return response()->json(['success' => true, 'data' => $user], 201);
+			return response()->json(['success' => true, 'data' => new UserResource($user)], 201);
 		}
 	}
 
 	public function show($id)
 	{
-		$user = User::find($id);
+		$user = User::with(['profile', 'roles', 'clinics'])->find($id);
 
 		if ($user) {
-			return new UserResource(User::findOrFail($id));
+			return new UserResource($user);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
@@ -63,11 +63,11 @@ class UserController extends Controller
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$user = User::find($id);
-			
+
 			if ($user) {
 				$user->username = $request->username;
 				$user->save();
-				return response()->json(['success' => true, 'data' => $user], 200);
+				return response()->json(['success' => true, 'data' => new UserResource($user)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -83,6 +83,28 @@ class UserController extends Controller
 			return response()->json(['success' => true, 'data' => $user], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
+		}
+	}
+
+	public function reset(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'user_id' => 'required|exists:App\Models\User,id',
+			'password' => 'required'
+		]);
+
+		if ($validator->fails()) {
+			return response()->json(['errors' => $validator->errors()], 400);
+		} else {
+			$user = User::find($request->user_id);
+			
+			if ($user) {
+				$user->password = bcrypt($request->password);
+				$user->save();
+				return response()->json(['success' => true, 'data' => new UserResource($user)], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
 		}
 	}
 }

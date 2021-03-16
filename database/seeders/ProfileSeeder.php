@@ -14,6 +14,8 @@ class ProfileSeeder extends Seeder
 	 */
 	public function run()
 	{
+		// Profile::truncate();
+
 		Profile::insert([
 			['user_id' => 1, 'name' => 'Indra Pramana', 'dob' => '1987-06-08', 'phone' => '085294076828'],
 			['user_id' => 2, 'name' => 'Dokter Indra', 'dob' => '1987-06-08', 'phone' => '-'],

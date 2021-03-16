@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\UserClinic;
+use App\Models\ClinicUser;
 
-class UserClinicSeeder extends Seeder
+class ClinicUserSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.
@@ -14,7 +14,9 @@ class UserClinicSeeder extends Seeder
 	 */
 	public function run()
 	{
-		UserClinic::insert([
+		// ClinicUser::truncate();
+
+		ClinicUser::insert([
 			['user_id' => 2, 'clinic_id' => 1],
 			['user_id' => 3, 'clinic_id' => 1]
 		]);

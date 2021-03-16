@@ -54,7 +54,7 @@ class User extends Authenticatable
 
 	public function clinics()
 	{
-		return $this->belongsToMany('App\Models\Clinic', 'user_clinic');
+		return $this->belongsToMany('App\Models\Clinic')->using('App\Models\ClinicUser');
 	}
 
 	public function profile()

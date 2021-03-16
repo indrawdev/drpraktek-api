@@ -15,6 +15,8 @@ class ClinicSeeder extends Seeder
      */
     public function run()
     {
+			// Clinic::truncate();
+
       Clinic::create([
 				'uuid' => Str::uuid(),
 				'email' => 'praktek@clinic.co.id',

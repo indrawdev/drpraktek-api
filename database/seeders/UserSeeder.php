@@ -15,6 +15,8 @@ class UserSeeder extends Seeder
 	 */
 	public function run()
 	{
+		// User::truncate();
+
 		User::insert([
 			['uuid' => Str::uuid(), 'username' => 'superadmin', 'password' => bcrypt('12345678')],
 			['uuid' => Str::uuid(), 'username' => 'dokter', 'password' => bcrypt('12345678')],

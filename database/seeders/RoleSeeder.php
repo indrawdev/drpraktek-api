@@ -14,6 +14,8 @@ class RoleSeeder extends Seeder
 	 */
 	public function run()
 	{
+		// Role::truncate();
+
 		Role::insert([
 			['name' => 'Superadmin', 'slug' => 'superadmin'],
 			['name' => 'Doctor', 'slug' => 'doctor'],
