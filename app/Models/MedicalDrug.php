@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MedicalDrug extends Pivot
 {
-	use HasFactory;
+	protected $table = 'medical_drugs';
 }

@@ -23,6 +23,8 @@ class User extends Authenticatable
 		'password',
 	];
 
+	protected $visible = ['username'];
+
 	/**
 	 * The attributes that should be hidden for arrays.
 	 *

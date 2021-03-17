@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MedicalFee extends Pivot
 {
-	protected $table = 'role_user';
+	protected $table = 'medical_fee';
 	
 	public function medical()
 	{

@@ -19,6 +19,7 @@ class CreateRegistrationsTable extends Migration
 			$table->foreignId('user_id');
 			$table->foreignId('patient_id');
 			$table->string('number');
+			$table->string('blood pressure');
 			$table->dateTime('registered_at', 0);
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);

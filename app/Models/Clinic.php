@@ -13,7 +13,7 @@ class Clinic extends Model
 
 	public function users()
 	{
-		return $this->belongsToMany('App\Models\User', 'user_clinic');
+		return $this->belongsToMany('App\Models\User')->using('App\Models\ClinicUser');
 	}
 
 	public function appointments()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Http\Resources\UserResource;
@@ -12,7 +13,7 @@ class UserController extends Controller
 {
 	public function index()
 	{
-		$users = User::all();
+		$users = User::paginate(15);
 
 		if ($users->count() > 0) {
 			return UserResource::collection($users);
@@ -36,7 +37,10 @@ class UserController extends Controller
 			$user->uuid = Str::uuid();
 			$user->username = $request->username;
 			$user->password = $request->password;
-			$user->save();
+
+			DB::transaction(function () use ($user) {
+				$user->save();
+			});
 
 			return response()->json(['success' => true, 'data' => new UserResource($user)], 201);
 		}
@@ -66,7 +70,11 @@ class UserController extends Controller
 
 			if ($user) {
 				$user->username = $request->username;
-				$user->save();
+
+				DB::transaction(function () use ($user) {
+					$user->save();
+				});
+				
 				return response()->json(['success' => true, 'data' => new UserResource($user)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);

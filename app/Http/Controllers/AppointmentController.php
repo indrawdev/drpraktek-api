@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Appointment;
 use App\Http\Resources\AppointmentResource;
 
@@ -37,7 +38,10 @@ class AppointmentController extends Controller
 			$appointment->patient_id = $request->patient_id;
 			$appointment->officer_id = $request->officer_id;
 			$appointment->appointment_at = $request->appointment_at;
-			$appointment->save();
+
+			DB::transaction(function () use ($appointment) {
+				$appointment->save();
+			});
 
 			return response()->json(['success' => true, 'data' => $appointment], 200);
 		}
@@ -71,7 +75,11 @@ class AppointmentController extends Controller
 				$appointment->patient_id = $request->patient_id;
 				$appointment->officer_id = $request->officer_id;
 				$appointment->appointment_at = $request->appointment_at;
-				$appointment->save();
+
+				DB::transaction(function () use ($appointment) {
+					$appointment->save();
+				});
+
 				return response()->json(['success' => true, 'data' => $appointment], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
@@ -84,7 +92,9 @@ class AppointmentController extends Controller
 		$appointment = Appointment::find($id);
 
 		if ($appointment) {
-			$appointment->delete();
+			DB::transaction(function () use ($appointment) {
+				$appointment->delete();
+			});
 			return response()->json(['success' => true, 'data' => $appointment], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);

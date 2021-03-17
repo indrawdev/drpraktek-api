@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Insurance;
 use Illuminate\Database\Seeder;
+use App\Models\Insurance;
 
 class InsuranceSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class InsuranceSeeder extends Seeder
 		// Insurance::truncate();
 
 		Insurance::insert([
-			['name' => 'BPJS', 'address' => 'Jakarta']
+			['name' => 'BPJS', 'slug' => 'bpjs', 'address' => 'Jakarta']
 		]);
 	}
 }

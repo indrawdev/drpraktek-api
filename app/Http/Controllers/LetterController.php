@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Letter;
+use App\Models\Clinic;
 use App\Http\Resources\LetterResource;
 use PDF;
 
@@ -38,13 +40,17 @@ class LetterController extends Controller
 			$letter->clinic_id = $request->clinic_id;
 			$letter->user_id = $request->user_id;
 			$letter->patient_id = $request->patient_id;
-			$letter->number = $request->number;
 			$letter->start_at = $request->start_at;
 			$letter->end_at = $request->end_at;
 
-			$letter->save();
+			DB::transaction(function () use ($letter) {
+				$letter->save();
+				$set = Letter::find($letter->id);
+				$set->number = 	$this->generateNumber($letter->clinic_id);
+				$set->save();
+			});
 
-			return response()->json(['success' => true, 'data' => $letter], 201);
+			return response()->json(['success' => true, 'data' => new LetterResource($letter)], 201);
 		}
 	}
 
@@ -111,7 +117,7 @@ class LetterController extends Controller
 
 	public function health($uuid)
 	{
-		$letter = Letter::with(['patient', 'doctor'])->where('uuid', $uuid)->first();
+		$letter = Letter::with(['patient', 'user'])->where('uuid', $uuid)->first();
 
 		if ($letter) {
 			$pdf = PDF::loadView('prints.letters.health', ['letter' => $letter]);
@@ -125,7 +131,7 @@ class LetterController extends Controller
 
 	public function sick($uuid)
 	{
-		$letter = Letter::where('uuid', $uuid)->first();
+		$letter = Letter::with(['patient', 'user'])->where('uuid', $uuid)->first();
 		if ($letter) {
 			$pdf = PDF::loadView('prints.letters.sick', ['letter' => $letter]);
 			return $pdf->stream();
@@ -137,7 +143,7 @@ class LetterController extends Controller
 
 	public function pregnant($uuid)
 	{
-		$letter = Letter::where('uuid', $uuid)->first();
+		$letter = Letter::with(['patient', 'user'])->where('uuid', $uuid)->first();
 		if ($letter) {
 			$pdf = PDF::loadView('prints.letters.pregnant', ['letter' => $letter]);
 			return $pdf->stream();
@@ -149,7 +155,7 @@ class LetterController extends Controller
 
 	public function informedconcent($uuid)
 	{
-		$letter = Letter::where('uuid', $uuid)->first();
+		$letter = Letter::with(['patient', 'user'])->where('uuid', $uuid)->first();
 		if ($letter) {
 			$pdf = PDF::loadView('prints.letters.informedconcent', ['letter' => $letter]);
 			return $pdf->stream();
@@ -157,5 +163,12 @@ class LetterController extends Controller
 			$pdf = PDF::loadView('prints.letters.informedconcent');
 			return $pdf->stream();
 		}
+	}
+
+	private function generateNumber($id)
+	{
+		$clinic = Clinic::find($id);
+		$clinic->increment('count_letter', 1);
+		return $clinic->count_letter;
 	}
 }

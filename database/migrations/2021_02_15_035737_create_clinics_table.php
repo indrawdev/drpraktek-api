@@ -23,6 +23,12 @@ class CreateClinicsTable extends Migration
 			$table->string('phone');
 			$table->string('logo')->nullable();
 			$table->string('siup')->nullable();
+			$table->integer('count_patient')->unsigned();
+			$table->integer('count_registration')->unsigned();
+			$table->integer('count_medical')->unsigned();
+			$table->integer('count_drug')->unsigned();
+			$table->integer('count_fee')->unsigned();
+			$table->integer('count_letter')->unsigned();
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 		});

@@ -35,4 +35,18 @@ class Medical extends Model
 		return $this->belongsToMany('App\Models\Fee')->using('App\Models\MedicalFee');
 	}
 
+	public function drugs()
+	{
+		return $this->belongsToMany('App\Models\Drug')->using('App\Models\MedicalDrug');
+	}
+
+	public function getNumberAttribute($value)
+	{
+		return "MDC{$value}";
+	}
+
+	public function setNumberAttribute($value)
+	{
+		$this->attributes['number'] = date('Ymd') . $value;
+	}
 }

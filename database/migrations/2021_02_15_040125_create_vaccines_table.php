@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMedicalFeesTable extends Migration
+class CreateVaccinesTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,19 +13,17 @@ class CreateMedicalFeesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('medical_fees', function (Blueprint $table) {
+		Schema::create('vaccines', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('clinic_id');
-			$table->foreignId('medical_id');
-			$table->foreignId('fee_id');
+			$table->foreignId('user_id');
 			$table->string('name');
-			$table->integer('qty');
-			$table->decimal('subtotal');
+			$table->decimal('price');
 			$table->timestamps();
+			$table->softDeletes('deleted_at', 0);
 
 			$table->foreign('clinic_id')->references('id')->on('clinics');
-			$table->foreign('medical_id')->references('id')->on('medicals');
-			$table->foreign('fee_id')->references('id')->on('fees');
+			$table->foreign('user_id')->references('id')->on('users');
 		});
 	}
 
@@ -36,6 +34,6 @@ class CreateMedicalFeesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('medical_fees');
+		Schema::dropIfExists('vaccines');
 	}
 }

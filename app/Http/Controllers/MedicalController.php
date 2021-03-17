@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Medical;
 use App\Models\MedicalFee;
+use App\Models\Clinic;
 use App\Http\Resources\MedicalResource;
 
 class MedicalController extends Controller
@@ -43,17 +45,20 @@ class MedicalController extends Controller
 			$medical->anamnesa = $request->anamnesa;
 			$medical->diagnosis = $request->diagnosis;
 			$medical->action = $request->action;
-			$medical->grand_total = $request->grand_total;
-			$medical->confirmed = 0;
-			$medical->save();
+			$medical->total = $request->total;
+			$medical->confirmed = false;
 
-			return response()->json(['success' => true, 'data' => $medical], 201);
+			DB::transaction(function () use ($medical) {
+				$medical->save();
+			});
+
+			return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 201);
 		}
 	}
 
 	public function show($id)
 	{
-		$medical = Medical::with(['clinic', 'registration', 'doctor', 'patient'])->find($id);
+		$medical = Medical::with(['clinic', 'registration', 'patient'])->find($id);
 
 		if ($medical) {
 			return new MedicalResource($medical);
@@ -81,8 +86,11 @@ class MedicalController extends Controller
 				$medical->anamnesa = $request->anamnesa;
 				$medical->diagnosis = $request->diagnosis;
 				$medical->action = $request->action;
-				$medical->grand_total = $request->grand_total;
-				$medical->save();
+				$medical->total = $request->total;
+
+				DB::transaction(function () use ($medical) {
+					$medical->save();
+				});
 		
 				return response()->json(['success' => true, 'data' => $medical], 200);
 			} else {
@@ -122,5 +130,12 @@ class MedicalController extends Controller
 
 			return response()->json(['success' => true, 'data' => $mf], 201);
 		}
+	}
+
+	private function generateNumber($id)
+	{
+		$clinic = Clinic::find($id);
+		$clinic->increment('count_medical', 1);
+		return $clinic->count_medical;
 	}
 }

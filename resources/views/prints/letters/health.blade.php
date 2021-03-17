@@ -94,7 +94,7 @@
 		</tr>
 		<tr>
 			<td width="70%"></td>
-			<td width="30%" align="center">{{ $letter->doctor->name }}</td>
+			<td width="30%" align="center">{{ $letter->user->profile->name }}</td>
 		</tr>
 	</table>
 </body>

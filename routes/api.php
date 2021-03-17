@@ -29,11 +29,11 @@ Route::group(['prefix' => 'auth'], function () {
 	Route::post('/login', [AuthController::class, 'login'])->name('login');
 	Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 	Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-	Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+	Route::get('/profile/{uuid}', [AuthController::class, 'profile'])->name('profile');
+	Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
 });
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
-
 Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('/approved', [RegisterController::class, 'approved'])->name('approved');
@@ -88,4 +88,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::put('/letter/{id}', [LetterController::class, 'update']);
 	Route::delete('/letter/{id}', [LetterController::class, 'destroy']);
 
+});
+
+Route::fallback(function () {
+	return response()->json(['error' => 'Method not allowed'], 405);
 });

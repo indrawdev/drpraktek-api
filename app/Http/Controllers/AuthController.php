@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
 	public function __construct()
 	{
-		$this->middleware('auth:sanctum', ['except' => ['login']]);
+		$this->middleware('auth:sanctum', ['except' => ['login', 'forgot']]);
 	}
 
 	public function index()
@@ -38,14 +38,11 @@ class AuthController extends Controller
 		$user = User::with(['profile', 'roles', 'clinics'])->where('username', $request->username)->first();
 
 		if (!$user || !Hash::check($request->password, $user->password)) {
-			return response()->json([
-				'error' => 'Incorrect user'
-			], 404);
+			return response()->json(['error' => 'Incorrect user'], 404);
 		}
 
 		return response()->json([
 			'user' => new UserResource($user),
-			// 'data' => $user,
 			'token' => $user->createToken($request->device_name)->plainTextToken,
 		], 200);
 	}
@@ -73,22 +70,27 @@ class AuthController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function profile()
+	public function profile($uuid)
 	{
-		return response(['data' => ''])->json();
+		$user = User::with('profile')->where('uuid', $uuid)->first();
+		return new UserResource($user);
 	}
 
 	public function forgot(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'username' => 'required'
+			'username' => 'required|string|exists:App\Models\User,username'
 		]);
 
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$user = '';
-			return response()->json(['data' => $user], 200);
+			$user = User::where('username', $request->username)->first();
+			if ($user) {
+				return new UserResource($user);
+			} else {
+				return response()->json(['error' => 'Incorrect user'], 404);
+			}
 		}
 	}
 }

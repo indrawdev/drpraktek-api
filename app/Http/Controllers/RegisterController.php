@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Register;
 use App\Http\Resources\RegisterResource;
@@ -48,7 +49,10 @@ class RegisterController extends Controller
 			$register->address = $request->address;
 			$register->email = $request->email;
 			$register->phone = $request->phone;
-			$register->save();
+
+			DB::transaction(function () use ($register) {
+				$register->save();
+			});
 
 			return response()->json(['success' => true, 'data' => $register], 201);
 		}
@@ -86,7 +90,10 @@ class RegisterController extends Controller
 				$register->address = $request->address;
 				$register->email = $request->email;
 				$register->phone = $request->phone;
-				$register->save();
+				
+				DB::transaction(function () use ($register) {
+					$register->save();
+				});
 
 				return response()->json(['success' => true, 'data' => $register], 200);
 			} else {

@@ -16,10 +16,12 @@ class RegisterResource extends JsonResource
 	{
 		return [
 			'id' => $this->id,
+			'name' => $this->id,
 			'clinic' => $this->clinic,
 			'address' => $this->address,
 			'email' => $this->email,
-			'phone' => $this->phone
+			'phone' => $this->phone,
+			'approved' => $this->approved
 		];
 	}
 }

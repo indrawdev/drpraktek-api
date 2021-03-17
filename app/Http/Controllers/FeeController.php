@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Fee;
 use App\Http\Resources\FeeResource;
-
 
 class FeeController extends Controller
 {
@@ -36,7 +36,10 @@ class FeeController extends Controller
 			$fee->clinic_id = $request->clinic_id;
 			$fee->name = $request->name;
 			$fee->price = $request->price;
-			$fee->save();
+
+			DB::transaction(function () use ($fee) {
+				$fee->save();
+			});
 
 			return response()->json(['success' => true, 'data' => $fee], 201);
 		}
@@ -83,5 +86,12 @@ class FeeController extends Controller
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
+	}
+
+	private function generateNumber($id)
+	{
+		$clinic = Clinic::find($id);
+		$clinic->increment('count_letter', 1);
+		return $clinic->count_letter;
 	}
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Clinic;
 use App\Http\Resources\ClinicResource;
@@ -40,7 +41,10 @@ class ClinicController extends Controller
 			$clinic->slug = $request->name;
 			$clinic->address = $request->address;
 			$clinic->phone = $request->phone;
-			$clinic->save();
+
+			DB::transaction(function () use ($clinic) {
+				$clinic->save();
+			});
 
 			return response()->json(['success' => true, 'data' => $clinic], 201);
 		}
@@ -76,7 +80,10 @@ class ClinicController extends Controller
 				$clinic->address = $request->address;
 				$clinic->phone = $request->phone;
 				$clinic->email = $request->email;
-				$clinic->save();
+				
+				DB::transaction(function () use ($clinic) {
+					$clinic->save();
+				});
 
 				return response()->json(['success' => true, 'data' => $clinic], 200);
 			} else {

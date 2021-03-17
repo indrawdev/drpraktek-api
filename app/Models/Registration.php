@@ -25,8 +25,13 @@ class Registration extends Model
 		return $this->belongsTo('App\Models\Patient');
 	}
 
+	public function getNumberAttribute($value)
+	{
+		return "REG{$value}";
+	}
+
 	public function setNumberAttribute($value)
 	{
-		$this->attributes['number'] = $value;
+		$this->attributes['number'] = date('Ymd') . $value;
 	}
 }

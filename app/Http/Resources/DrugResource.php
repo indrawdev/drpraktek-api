@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\ClinicResource;
 
 class DrugResource extends JsonResource
 {
@@ -16,8 +17,10 @@ class DrugResource extends JsonResource
 	{
 		return [
 			'id' => $this->id,
+			'sku' => $this->sku,
 			'name' => $this->name,
-			'price' => $this->price
+			'price' => $this->price,
+			'client' => new ClinicResource($this->whenLoaded('client')),
 		];
 	}
 }

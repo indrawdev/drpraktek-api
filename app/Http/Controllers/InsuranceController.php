@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Insurance;
 use App\Http\Resources\InsuranceResource;
 
@@ -33,7 +34,10 @@ class InsuranceController extends Controller
 			$insurance->name = $request->name;
 			$insurance->address = $request->address;
 			$insurance->slug = $request->name;
-			$insurance->save();
+
+			DB::transaction(function () use ($insurance) {
+				$insurance->save();
+			});
 
 			return response()->json(['success' => true, 'data' => $insurance], 201);
 		}
@@ -65,7 +69,11 @@ class InsuranceController extends Controller
 				$insurance->name = $request->name;
 				$insurance->address = $request->address;
 				$insurance->slug = $request->name;
-				$insurance->save();
+
+				DB::transaction(function () use ($insurance) {
+					$insurance->save();
+				});
+
 				return response()->json(['success' => true, 'data' => $insurance], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);

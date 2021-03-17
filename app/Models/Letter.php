@@ -25,13 +25,18 @@ class Letter extends Model
 		return $this->belongsTo('App\Models\Patient');
 	}
 
-	// public function getDayAttribute()
-	// {
-	// 	return $this->attributes['day'];
-	// }
+	public function getDayAttribute($value)
+	{
+		// return $value->attributes['day'];
+	}
+
+	public function getNumberAttribute($value)
+	{
+		return "LTR{$value}";
+	}
 
 	public function setNumberAttribute($value)
 	{
-		$this->attributes['number'] = $value;
+		$this->attributes['number'] = date('Ymd') . $value;
 	}
 }

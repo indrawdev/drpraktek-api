@@ -19,6 +19,10 @@ class LetterResource extends JsonResource
 	{
 		return [
 			'id' => $this->id,
+			'uuid' => $this->uuid,
+			'start_at' => $this->start_at,
+			'end_at' => $this->end_at,
+			'number' => $this->number,
 			'client' => new ClinicResource($this->whenLoaded('client')),
 			'user' => new UserResource($this->whenLoaded('user')),
 			'patient' => new PatientResource($this->whenLoaded('patient'))

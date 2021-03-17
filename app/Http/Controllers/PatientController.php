@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
+use App\Models\Clinic;
 use App\Http\Resources\PatientResource;
 
 class PatientController extends Controller
@@ -48,9 +50,12 @@ class PatientController extends Controller
 			$patient->address = $request->address;
 			$patient->phone = $request->phone;
 			$patient->insurance_number = $request->insurance_number;
-			$patient->save();
 
-			return response()->json(['success' => true, 'data' => $patient], 201);
+			DB::transaction(function () use ($patient) {
+				$patient->save();
+			});
+
+			return response()->json(['success' => true, 'data' => new PatientResource($patient)], 201);
 		}
 	}
 
@@ -93,8 +98,12 @@ class PatientController extends Controller
 				$patient->address = $request->address;
 				$patient->phone = $request->phone;
 				$patient->insurance_number = $request->insurance_number;
-				$patient->save();
-				return response()->json(['success' => true, 'data' => $patient], 200);
+
+				DB::transaction(function () use ($patient) {
+					$patient->save();
+				});
+
+				return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -111,5 +120,12 @@ class PatientController extends Controller
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
+	}
+
+	private function generateNumber($id)
+	{
+		$clinic = Clinic::find($id);
+		$clinic->increment('count_patient', 1);
+		return $clinic->count_patient;
 	}
 }
