@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fee;
+use App\Models\Clinic;
 use App\Http\Resources\FeeResource;
 
 class FeeController extends Controller
