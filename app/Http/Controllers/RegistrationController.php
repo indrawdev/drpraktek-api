@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Registration;
 use App\Models\Clinic;
 use App\Http\Resources\RegistrationResource;
+use Exception;
 
 class RegistrationController extends Controller
 {
@@ -34,18 +35,29 @@ class RegistrationController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$registration = new Registration();
-			$registration->clinic_id = $request->clinic_id;
-			$registration->patient_id = $request->patient_id;
-			$registration->user_id = $request->user_id;
-			$registration->registered_at = $request->registered_at;
+			
+			try {
+				$registration = new Registration();
+				$registration->clinic_id = $request->clinic_id;
+				$registration->patient_id = $request->patient_id;
+				$registration->user_id = $request->user_id;
+				$registration->registered_at = $request->registered_at;
+	
+				$clinic = Clinic::find($request->clinic_id);
+	
+				DB::transaction(function () use ($registration, $clinic) {
+					$registration->save();
+					$clinic->increment('count_registration', 1);
+					$count = Registration::find($registration->id);
+					$count->number = $clinic->count_registration;
+					$count->save();
+				});
+	
+				return response()->json(['success' => true, 'data' => new RegistrationResource($registration)], 201);
 
-			DB::transaction(function () use ($registration, $request) {
-				$registration->number = $this->generateNumber($request->clinic_id);
-				$registration->save();
-			});
-
-			return response()->json(['success' => true, 'data' => $registration], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
@@ -65,7 +77,6 @@ class RegistrationController extends Controller
 		$validator = Validator::make($request->all(), [
 			'patient_id' => 'required|exists:App\Models\Patient,id',
 			'user_id' => 'required|exists:App\Models\User,id',
-			'number' => 'required',
 			'registered_at' => 'required',
 		]);
 
@@ -75,16 +86,19 @@ class RegistrationController extends Controller
 			$registration = Registration::find($id);
 
 			if ($registration) {
-				$registration->patient_id = $request->patient_id;
-				$registration->user_id = $request->user_id;
-				$registration->number = $request->number;
-				$registration->registered_at = $request->registered_at;
-
-				DB::transaction(function () use ($registration) {
-					$registration->save();
-				});
-		
-				return response()->json(['success' => true, 'data' => $registration], 200);
+				try {
+					$registration->patient_id = $request->patient_id;
+					$registration->user_id = $request->user_id;
+					$registration->registered_at = $request->registered_at;
+	
+					DB::transaction(function () use ($registration) {
+						$registration->save();
+					});
+			
+					return response()->json(['success' => true, 'data' => new RegistrationResource($registration)], 200);
+				} catch (Exception $e) {
+					return $e;
+				}
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -101,12 +115,5 @@ class RegistrationController extends Controller
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
-	}
-
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_registration', 1);
-		return $clinic->count_registration;
 	}
 }

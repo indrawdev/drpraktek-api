@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Fee;
 use App\Models\Clinic;
 use App\Http\Resources\FeeResource;
+use Exception;
 
 class FeeController extends Controller
 {
@@ -33,16 +34,27 @@ class FeeController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$fee = new Fee();
-			$fee->clinic_id = $request->clinic_id;
-			$fee->name = $request->name;
-			$fee->price = $request->price;
 
-			DB::transaction(function () use ($fee) {
-				$fee->save();
-			});
-
-			return response()->json(['success' => true, 'data' => $fee], 201);
+			try {
+				$fee = new Fee();
+				$fee->clinic_id = $request->clinic_id;
+				$fee->name = $request->name;
+				$fee->price = $request->price;
+	
+				$clinic = Clinic::find($request->clinic_id);
+	
+				DB::transaction(function () use ($fee, $clinic) {
+					$fee->save();
+					$clinic->increment('count_letter', 1);
+					$count = Fee::find($fee->id);
+					$count->number = $clinic->count_letter;
+					$count->save();
+				});
+	
+				return response()->json(['success' => true, 'data' => $fee], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
@@ -89,10 +101,4 @@ class FeeController extends Controller
 		}
 	}
 
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_letter', 1);
-		return $clinic->count_letter;
-	}
 }

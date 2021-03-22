@@ -9,6 +9,7 @@ use App\Models\Medical;
 use App\Models\MedicalFee;
 use App\Models\Clinic;
 use App\Http\Resources\MedicalResource;
+use Exception;
 
 class MedicalController extends Controller
 {
@@ -37,22 +38,33 @@ class MedicalController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$medical = new Medical();
-			$medical->clinic_id = $request->clinic_id;
-			$medical->registration_id = $request->registration_id;
-			$medical->patient_id = $request->patient_id;
-			$medical->user_id = $request->user_id;
-			$medical->anamnesa = $request->anamnesa;
-			$medical->diagnosis = $request->diagnosis;
-			$medical->action = $request->action;
-			$medical->total = $request->total;
-			$medical->confirmed = false;
 
-			DB::transaction(function () use ($medical) {
-				$medical->save();
-			});
-
-			return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 201);
+			try {
+				$medical = new Medical();
+				$medical->clinic_id = $request->clinic_id;
+				$medical->registration_id = $request->registration_id;
+				$medical->patient_id = $request->patient_id;
+				$medical->user_id = $request->user_id;
+				$medical->anamnesa = $request->anamnesa;
+				$medical->diagnosis = $request->diagnosis;
+				$medical->action = $request->action;
+				$medical->total = $request->total;
+				$medical->confirmed = false;
+	
+				$clinic = Clinic::find($request->clinic_id);
+	
+				DB::transaction(function () use ($medical, $clinic) {
+					$medical->save();
+					$clinic->increment('count_medical', 1);
+					$count = Medical::find($medical->id);
+					$count->number = $clinic->count_medical;
+					$count->save();
+				});
+	
+				return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
@@ -82,17 +94,21 @@ class MedicalController extends Controller
 			$medical = Medical::find($id);
 
 			if ($medical) {
-				$medical->doctor_id = $request->doctor_id;
-				$medical->anamnesa = $request->anamnesa;
-				$medical->diagnosis = $request->diagnosis;
-				$medical->action = $request->action;
-				$medical->total = $request->total;
-
-				DB::transaction(function () use ($medical) {
-					$medical->save();
-				});
-		
-				return response()->json(['success' => true, 'data' => $medical], 200);
+				try {
+					$medical->doctor_id = $request->doctor_id;
+					$medical->anamnesa = $request->anamnesa;
+					$medical->diagnosis = $request->diagnosis;
+					$medical->action = $request->action;
+					$medical->total = $request->total;
+	
+					DB::transaction(function () use ($medical) {
+						$medical->save();
+					});
+			
+					return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 200);
+				} catch (Exception $e) {
+					return $e;
+				}
 			} else {
 				return response()->json(['message' => 'Not Found'], 404);
 			}
@@ -132,10 +148,4 @@ class MedicalController extends Controller
 		}
 	}
 
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_medical', 1);
-		return $clinic->count_medical;
-	}
 }

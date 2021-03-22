@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\Clinic;
 use App\Http\Resources\PatientResource;
+use Exception;
 
 class PatientController extends Controller
 {
@@ -36,26 +37,37 @@ class PatientController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$patient = new Patient();
-			$patient->clinic_id = $request->clinic_id;
-			$patient->insurance_id = $request->insurance_id;
-			$patient->name = $request->name;
-			$patient->number = $request->number;
-			$patient->identity = $request->identity;
-			$patient->dob = $request->dob;
-			$patient->gender = $request->gender;
-			$patient->blood = $request->blood;
-			$patient->height = $request->height;
-			$patient->weight = $request->weight;
-			$patient->address = $request->address;
-			$patient->phone = $request->phone;
-			$patient->insurance_number = $request->insurance_number;
 
-			DB::transaction(function () use ($patient) {
-				$patient->save();
-			});
-
-			return response()->json(['success' => true, 'data' => new PatientResource($patient)], 201);
+			try {
+				$patient = new Patient();
+				$patient->clinic_id = $request->clinic_id;
+				$patient->insurance_id = $request->insurance_id;
+				$patient->name = $request->name;
+				$patient->number = $request->number;
+				$patient->identity = $request->identity;
+				$patient->dob = $request->dob;
+				$patient->gender = $request->gender;
+				$patient->blood = $request->blood;
+				$patient->height = $request->height;
+				$patient->weight = $request->weight;
+				$patient->address = $request->address;
+				$patient->phone = $request->phone;
+				$patient->insurance_number = $request->insurance_number;
+	
+				$clinic = Clinic::find($request->clinic_id);
+	
+				DB::transaction(function () use ($patient, $clinic) {
+					$patient->save();
+					$clinic->increment('count_patient', 1);
+					$count = Patient::find($patient->id);
+					$count->number = $clinic->count_patient;
+					$count->save();
+				});
+	
+				return response()->json(['success' => true, 'data' => new PatientResource($patient)], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
@@ -86,24 +98,28 @@ class PatientController extends Controller
 			$patient = Patient::find($id);
 			
 			if ($patient) {
-				$patient->insurance_id = $request->insurance_id;
-				$patient->name = $request->name;
-				$patient->number = $request->number;
-				$patient->identity = $request->identity;
-				$patient->dob = $request->dob;
-				$patient->gender = $request->gender;
-				$patient->blood = $request->blood;
-				$patient->height = $request->height;
-				$patient->weight = $request->weight;
-				$patient->address = $request->address;
-				$patient->phone = $request->phone;
-				$patient->insurance_number = $request->insurance_number;
-
-				DB::transaction(function () use ($patient) {
-					$patient->save();
-				});
-
-				return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
+				try {
+					$patient->insurance_id = $request->insurance_id;
+					$patient->name = $request->name;
+					$patient->number = $request->number;
+					$patient->identity = $request->identity;
+					$patient->dob = $request->dob;
+					$patient->gender = $request->gender;
+					$patient->blood = $request->blood;
+					$patient->height = $request->height;
+					$patient->weight = $request->weight;
+					$patient->address = $request->address;
+					$patient->phone = $request->phone;
+					$patient->insurance_number = $request->insurance_number;
+	
+					DB::transaction(function () use ($patient) {
+						$patient->save();
+					});
+	
+					return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
+				} catch (Exception $e) {
+					return $e;
+				}
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -122,10 +138,4 @@ class PatientController extends Controller
 		}
 	}
 
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_patient', 1);
-		return $clinic->count_patient;
-	}
 }
