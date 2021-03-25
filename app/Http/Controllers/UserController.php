@@ -88,7 +88,7 @@ class UserController extends Controller
 
 		if ($user) {
 			$user->delete();
-			return response()->json(['success' => true, 'data' => $user], 200);
+			return response()->json(['success' => true, 'data' => new UserResource($user)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

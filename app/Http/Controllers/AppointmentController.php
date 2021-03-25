@@ -43,7 +43,7 @@ class AppointmentController extends Controller
 				$appointment->save();
 			});
 
-			return response()->json(['success' => true, 'data' => $appointment], 200);
+			return response()->json(['success' => true, 'data' => new AppointmentResource($appointment)], 200);
 		}
 	}
 
@@ -80,7 +80,7 @@ class AppointmentController extends Controller
 					$appointment->save();
 				});
 
-				return response()->json(['success' => true, 'data' => $appointment], 200);
+				return response()->json(['success' => true, 'data' => new AppointmentResource($appointment)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -95,7 +95,7 @@ class AppointmentController extends Controller
 			DB::transaction(function () use ($appointment) {
 				$appointment->delete();
 			});
-			return response()->json(['success' => true, 'data' => $appointment], 200);
+			return response()->json(['success' => true, 'data' => new AppointmentResource($appointment)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

@@ -46,7 +46,7 @@ class ClinicController extends Controller
 				$clinic->save();
 			});
 
-			return response()->json(['success' => true, 'data' => $clinic], 201);
+			return response()->json(['success' => true, 'data' => new ClinicResource($clinic)], 201);
 		}
 	}
 
@@ -85,7 +85,7 @@ class ClinicController extends Controller
 					$clinic->save();
 				});
 
-				return response()->json(['success' => true, 'data' => $clinic], 200);
+				return response()->json(['success' => true, 'data' => new ClinicResource($clinic)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -98,7 +98,7 @@ class ClinicController extends Controller
 
 		if ($clinic) {
 			$clinic->delete();
-			return response()->json(['success' => true, 'data' => $clinic], 200);
+			return response()->json(['success' => true, 'data' => new ClinicResource($clinic)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

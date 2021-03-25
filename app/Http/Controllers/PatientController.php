@@ -132,7 +132,7 @@ class PatientController extends Controller
 
 		if ($patient) {
 			$patient->delete();
-			return response()->json(['success' => true, 'data' => $patient], 200);
+			return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

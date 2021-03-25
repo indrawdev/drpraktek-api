@@ -43,11 +43,14 @@ class LetterController extends Controller
 			$letter->start_at = $request->start_at;
 			$letter->end_at = $request->end_at;
 
-			DB::transaction(function () use ($letter) {
+			$clinic = Clinic::find($request->clinic_id);
+
+			DB::transaction(function () use ($letter, $clinic) {
 				$letter->save();
-				$set = Letter::find($letter->id);
-				$set->number = 	$this->generateNumber($letter->clinic_id);
-				$set->save();
+				$clinic->increment('count_letter', 1);
+				$count = Letter::find($letter->id);
+				$count->number = $clinic->count_letter;
+				$count->save();
 			});
 
 			return response()->json(['success' => true, 'data' => new LetterResource($letter)], 201);
@@ -163,12 +166,5 @@ class LetterController extends Controller
 			$pdf = PDF::loadView('prints.letters.informedconcent');
 			return $pdf->stream();
 		}
-	}
-
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_letter', 1);
-		return $clinic->count_letter;
 	}
 }

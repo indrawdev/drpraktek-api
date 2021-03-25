@@ -39,7 +39,7 @@ class InsuranceController extends Controller
 				$insurance->save();
 			});
 
-			return response()->json(['success' => true, 'data' => $insurance], 201);
+			return response()->json(['success' => true, 'data' => new InsuranceResource($insurance)], 201);
 		}
 	}
 
@@ -74,7 +74,7 @@ class InsuranceController extends Controller
 					$insurance->save();
 				});
 
-				return response()->json(['success' => true, 'data' => $insurance], 200);
+				return response()->json(['success' => true, 'data' => new InsuranceResource($insurance)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -87,7 +87,7 @@ class InsuranceController extends Controller
 
 		if ($insurance) {
 			$insurance->delete();
-			return response()->json(['success' => true, 'data' => $insurance], 200);
+			return response()->json(['success' => true, 'data' => new InsuranceResource($insurance)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

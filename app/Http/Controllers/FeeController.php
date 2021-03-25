@@ -51,7 +51,7 @@ class FeeController extends Controller
 					$count->save();
 				});
 	
-				return response()->json(['success' => true, 'data' => $fee], 201);
+				return response()->json(['success' => true, 'data' => new FeeResource($fee)], 201);
 			} catch (Exception $e) {
 				return $e;
 			}
@@ -82,7 +82,7 @@ class FeeController extends Controller
 			$fee = Fee::find($id);
 
 			if ($fee) {
-				return response()->json(['success' => true, 'data' => $fee], 200);
+				return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
 			} else {
 				return response()->json(['error' => 'Not found'], 404);
 			}
@@ -95,7 +95,7 @@ class FeeController extends Controller
 
 		if ($fee) {
 			$fee->delete();
-			return response()->json(['success' => true, 'data' => $fee], 200);
+			return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

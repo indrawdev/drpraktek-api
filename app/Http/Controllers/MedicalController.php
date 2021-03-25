@@ -121,7 +121,7 @@ class MedicalController extends Controller
 
 		if ($medical) {
 			$medical->delete();
-			return response()->json(['success' => true, 'data' => $medical], 200);
+			return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}

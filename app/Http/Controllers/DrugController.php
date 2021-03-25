@@ -84,16 +84,9 @@ class DrugController extends Controller
 
 		if ($drug) {
 			$drug->delete();
-			return response()->json(['success' => true, 'data' => $drug], 200);
+			return response()->json(['success' => true, 'data' => new DrugResource($drug)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
-	}
-
-	private function generateNumber($id)
-	{
-		$clinic = Clinic::find($id);
-		$clinic->increment('count_letter', 1);
-		return $clinic->count_letter;
 	}
 }

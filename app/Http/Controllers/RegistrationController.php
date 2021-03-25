@@ -111,7 +111,7 @@ class RegistrationController extends Controller
 
 		if ($registration) {
 			$registration->delete();
-			return response()->json(['success' => true, 'data' => $registration], 200);
+			return response()->json(['success' => true, 'data' => new RegistrationResource($registration)], 200);
 		} else {
 			return response()->json(['error' => 'Not found'], 404);
 		}
