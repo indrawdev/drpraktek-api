@@ -19,6 +19,7 @@ class CreateMedicalsTable extends Migration
 			$table->foreignId('registration_id');
 			$table->foreignId('user_id');
 			$table->foreignId('patient_id');
+			$table->string('number')->nullable();
 			$table->string('anamnesa');
 			$table->string('diagnosis');
 			$table->string('action');

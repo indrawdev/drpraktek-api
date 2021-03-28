@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Register;
 use App\Http\Resources\RegisterResource;
+use App\Mail\RegisterNewed;
 use App\Mail\RegisterApproved;
 use App\Mail\RegisterRejected;
+use Exception;
 
 class RegisterController extends Controller
 {
@@ -43,18 +45,25 @@ class RegisterController extends Controller
 		if ($validator->fails()) { 
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$register = new Register();
-			$register->name = $request->name;
-			$register->clinic = $request->clinic;
-			$register->address = $request->address;
-			$register->email = $request->email;
-			$register->phone = $request->phone;
 
-			DB::transaction(function () use ($register) {
-				$register->save();
-			});
-
-			return response()->json(['success' => true, 'data' => $register], 201);
+			try {
+				$register = new Register();
+				$register->name = $request->name;
+				$register->clinic = $request->clinic;
+				$register->address = $request->address;
+				$register->email = $request->email;
+				$register->phone = $request->phone;
+	
+				DB::transaction(function () use ($register) {
+					$register->save();
+					Mail::to($register->email)->send(new RegisterNewed($register));
+				});
+	
+				return new RegisterResource($register);
+			} catch (Exception $e) {
+				return $e;
+			}
+			
 		}
 	}
 

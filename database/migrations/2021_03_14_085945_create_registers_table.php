@@ -20,7 +20,7 @@ class CreateRegistersTable extends Migration
 			$table->string('address');
 			$table->string('email');
 			$table->string('phone');
-			$table->boolean('approved', 0);
+			$table->boolean('approved')->default(0);
 			$table->timestamps();
 			$table->softDeletes('deleted_at', 0);
 		});

@@ -17,7 +17,7 @@ class CreatePatientsTable extends Migration
 			$table->id();
 			$table->foreignId('clinic_id');
 			$table->foreignId('insurance_id')->nullable();
-			$table->string('number');
+			$table->string('number')->nullable();
 			$table->string('identity')->nullable();
 			$table->string('name');
 			$table->date('dob');

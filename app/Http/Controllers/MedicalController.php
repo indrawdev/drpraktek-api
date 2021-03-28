@@ -85,7 +85,7 @@ class MedicalController extends Controller
 			'user_id' => 'required|exists:App\Models\User,id',
 			'anamnesa' => 'required',
 			'diagnosis' => 'required',
-			'grand_total' => 'required'
+			'total' => 'required'
 		]);
 
 		if ($validator->fails()) { 
@@ -95,7 +95,6 @@ class MedicalController extends Controller
 
 			if ($medical) {
 				try {
-					$medical->doctor_id = $request->doctor_id;
 					$medical->anamnesa = $request->anamnesa;
 					$medical->diagnosis = $request->diagnosis;
 					$medical->action = $request->action;
