@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fee;
-use App\Models\Clinic;
 use App\Http\Resources\FeeResource;
 use Exception;
 
@@ -14,12 +13,15 @@ class FeeController extends Controller
 {
 	public function index()
 	{
-		$fees = Fee::all();
-
-		if ($fees->count() > 0) {
-			return FeeResource::collection($fees);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$fees = Fee::all();
+			if ($fees->count() > 0) {
+				return FeeResource::collection($fees);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -31,7 +33,7 @@ class FeeController extends Controller
 			'price' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 
@@ -40,17 +42,11 @@ class FeeController extends Controller
 				$fee->clinic_id = $request->clinic_id;
 				$fee->name = $request->name;
 				$fee->price = $request->price;
-	
-				$clinic = Clinic::find($request->clinic_id);
-	
-				DB::transaction(function () use ($fee, $clinic) {
+
+				DB::transaction(function () use ($fee) {
 					$fee->save();
-					$clinic->increment('count_letter', 1);
-					$count = Fee::find($fee->id);
-					$count->number = $clinic->count_letter;
-					$count->save();
 				});
-	
+
 				return response()->json(['success' => true, 'data' => new FeeResource($fee)], 201);
 			} catch (Exception $e) {
 				return $e;
@@ -60,12 +56,15 @@ class FeeController extends Controller
 
 	public function show($id)
 	{
-		$fee = Fee::with('clinic')->find($id);
-		
-		if ($fee) {
-			return new FeeResource($fee);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$fee = Fee::with('clinic')->find($id);
+			if ($fee) {
+				return new FeeResource($fee);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -79,26 +78,32 @@ class FeeController extends Controller
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$fee = Fee::find($id);
 
-			if ($fee) {
-				return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
-			} else {
-				return response()->json(['error' => 'Not found'], 404);
+			try {
+				$fee = Fee::find($id);
+				if ($fee) {
+					return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
+				} else {
+					return response()->json(['error' => 'Not found'], 404);
+				}
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$fee = Fee::find($id);
-
-		if ($fee) {
-			$fee->delete();
-			return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$fee = Fee::find($id);
+			if ($fee) {
+				$fee->delete();
+				return response()->json(['success' => true, 'data' => new FeeResource($fee)], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
-
 }

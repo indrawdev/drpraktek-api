@@ -9,18 +9,22 @@ use Illuminate\Support\Str;
 use App\Models\Letter;
 use App\Models\Clinic;
 use App\Http\Resources\LetterResource;
+use Exception;
 use PDF;
 
 class LetterController extends Controller
 {
 	public function index()
 	{
-		$letters = Letter::with(['user', 'patient'])->get();
-
-		if ($letters->count() > 0) {
-			return LetterResource::collection($letters);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$letters = Letter::with(['user', 'patient'])->get();
+			if ($letters->count() > 0) {
+				return LetterResource::collection($letters);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -35,36 +39,44 @@ class LetterController extends Controller
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$letter = new Letter();
-			$letter->uuid = Str::uuid();
-			$letter->clinic_id = $request->clinic_id;
-			$letter->user_id = $request->user_id;
-			$letter->patient_id = $request->patient_id;
-			$letter->start_at = $request->start_at;
-			$letter->end_at = $request->end_at;
 
-			$clinic = Clinic::find($request->clinic_id);
+			try {
+				$letter = new Letter();
+				$letter->uuid = Str::uuid();
+				$letter->clinic_id = $request->clinic_id;
+				$letter->user_id = $request->user_id;
+				$letter->patient_id = $request->patient_id;
+				$letter->start_at = $request->start_at;
+				$letter->end_at = $request->end_at;
 
-			DB::transaction(function () use ($letter, $clinic) {
-				$letter->save();
-				$clinic->increment('count_letter', 1);
-				$count = Letter::find($letter->id);
-				$count->number = $clinic->count_letter;
-				$count->save();
-			});
+				$clinic = Clinic::find($request->clinic_id);
 
-			return response()->json(['success' => true, 'data' => new LetterResource($letter)], 201);
+				DB::transaction(function () use ($letter, $clinic) {
+					$letter->save();
+					$clinic->increment('count_letter', 1);
+					$count = Letter::find($letter->id);
+					$count->number = $clinic->count_letter;
+					$count->save();
+				});
+
+				return response()->json(['success' => true, 'data' => new LetterResource($letter)], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
 	public function show($id)
 	{
-		$letter = Letter::with(['clinic', 'user', 'patient'])->find($id);
-
-		if ($letter) {
-			return new LetterResource($letter);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$letter = Letter::with(['clinic', 'user', 'patient'])->find($id);
+			if ($letter) {
+				return new LetterResource($letter);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -78,30 +90,37 @@ class LetterController extends Controller
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$letter = Letter::find($id);
 
-			if ($letter) {
-				$letter->user_id = $request->user_id;
-				$letter->patient_id = $request->patient_id;
-				$letter->start_at = $request->start_at;
-				$letter->end_at = $request->end_at;
-				$letter->save();
-				return response()->json(['success' => true, 'data' => $letter], 200);
-			} else {
-				return response()->json(['error' => 'Not found'], 404);
+			try {
+				$letter = Letter::find($id);
+				if ($letter) {
+					$letter->user_id = $request->user_id;
+					$letter->patient_id = $request->patient_id;
+					$letter->start_at = $request->start_at;
+					$letter->end_at = $request->end_at;
+					$letter->save();
+					return response()->json(['success' => true, 'data' => new LetterResource($letter)], 200);
+				} else {
+					return response()->json(['error' => 'Not found'], 404);
+				}
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$letter = Letter::find($id);
-
-		if ($letter) {
-			$letter->delete();
-			return response()->json(['success' => true, 'data' => $letter], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$letter = Letter::find($id);
+			if ($letter) {
+				$letter->delete();
+				return response()->json(['success' => true, 'data' => $letter], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -115,7 +134,6 @@ class LetterController extends Controller
 			$pdf = PDF::loadView('prints.letters.referral');
 			return $pdf->stream();
 		}
-
 	}
 
 	public function health($uuid)
@@ -129,7 +147,6 @@ class LetterController extends Controller
 			$pdf = PDF::loadView('prints.letters.health');
 			return $pdf->stream();
 		}
-
 	}
 
 	public function sick($uuid)

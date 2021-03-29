@@ -23,12 +23,15 @@ class RegisterController extends Controller
 
 	public function index()
 	{
-		$registers = Register::with('user')->get();
-
-		if ($registers->count() > 0) {
-			return RegisterResource::collection($registers);
-		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+		try {
+			$registers = Register::with('user')->get();
+			if ($registers->count() > 0) {
+				return RegisterResource::collection($registers);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -38,11 +41,11 @@ class RegisterController extends Controller
 			'name' => 'required|string',
 			'clinic' => 'required|string',
 			'address' => 'required|string',
-			'email' => 'required|email',
+			'email' => 'required|email|uniquie',
 			'phone' => 'required|string',
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 
@@ -53,28 +56,30 @@ class RegisterController extends Controller
 				$register->address = $request->address;
 				$register->email = $request->email;
 				$register->phone = $request->phone;
-	
+
 				DB::transaction(function () use ($register) {
 					$register->save();
 					Mail::to($register->email)->send(new RegisterNewed($register));
 				});
-	
+
 				return new RegisterResource($register);
 			} catch (Exception $e) {
 				return $e;
 			}
-			
 		}
 	}
 
 	public function show($id)
 	{
-		$register = Register::find($id);
-
-		if ($register) {
-			return new RegisterResource($register);
-		} else {
-			return response()->json(['message' => 'Not Found'], 404);
+		try {
+			$register = Register::find($id);
+			if ($register) {
+				return new RegisterResource($register);
+			} else {
+				return response()->json(['message' => 'Not Found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -91,60 +96,72 @@ class RegisterController extends Controller
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$register = Register::find($id);
 
-			if ($register) {
-				$register->name = $request->name;
-				$register->clinic = $request->clinic;
-				$register->address = $request->address;
-				$register->email = $request->email;
-				$register->phone = $request->phone;
-				
-				DB::transaction(function () use ($register) {
-					$register->save();
-				});
+			try {
+				$register = Register::find($id);
+				if ($register) {
+					$register->name = $request->name;
+					$register->clinic = $request->clinic;
+					$register->address = $request->address;
+					$register->email = $request->email;
+					$register->phone = $request->phone;
 
-				return response()->json(['success' => true, 'data' => $register], 200);
-			} else {
-				return response()->json(['error' => 'Not found'], 404);
+					DB::transaction(function () use ($register) {
+						$register->save();
+					});
+
+					return response()->json(['success' => true, 'data' => new RegisterResource($register)], 200);
+				} else {
+					return response()->json(['error' => 'Not found'], 404);
+				}
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$register = Register::find($id);
-
-		if ($register) {
-			$register->delete();
-			return response()->json(['success' => true, 'data' => $register], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$register = Register::find($id);
+			if ($register) {
+				$register->delete();
+				return response()->json(['success' => true, 'data' => $register], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
 	public function accepted(Request $request)
 	{
-		$register = Register::find($request->register_id);
-
-		if ($register) {
-			Mail::to($register->email)->send(new RegisterApproved($register));
-			return response()->json(['success' => true, 'data' => $register], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$register = Register::find($request->register_id);
+			if ($register) {
+				Mail::to($register->email)->send(new RegisterApproved($register));
+				return response()->json(['success' => true, 'data' => $register], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
 	public function rejected(Request $request)
 	{
-		$register = Register::find($request->register_id);
-
-		if ($register) {
-			$register->delete();
-			Mail::to($register->email)->send(new RegisterRejected($register));
-			return response()->json(['success' => true, 'data' => $register], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$register = Register::find($request->register_id);
+			if ($register) {
+				Mail::to($register->email)->send(new RegisterRejected($register));
+				return response()->json(['success' => true, 'data' => $register], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 }

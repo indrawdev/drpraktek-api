@@ -6,19 +6,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Drug;
-use App\Models\Clinic;
 use App\Http\Resources\DrugResource;
+use Exception;
 
 class DrugController extends Controller
 {
 	public function index()
 	{
-		$drugs = Drug::all();
-
-		if ($drugs->count() > 0) {
-			return DrugResource::collection($drugs);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$drugs = Drug::all();
+			if ($drugs->count() > 0) {
+				return DrugResource::collection($drugs);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -30,31 +33,39 @@ class DrugController extends Controller
 			'price' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$drug = new Drug();
-			$drug->clinic_id = $request->clinic_id;
-			$drug->sku = $request->sku;
-			$drug->name = $request->name;
-			$drug->price = $request->price;
 
-			DB::transaction(function () use ($drug) {
-				$drug->save();
-			});
+			try {
+				$drug = new Drug();
+				$drug->clinic_id = $request->clinic_id;
+				$drug->sku = $request->sku;
+				$drug->name = $request->name;
+				$drug->price = $request->price;
 
-			return response()->json(['success' => true, 'data' => new DrugResource($drug)], 201);
+				DB::transaction(function () use ($drug) {
+					$drug->save();
+				});
+
+				return response()->json(['success' => true, 'data' => new DrugResource($drug)], 201);
+			} catch (Exception $e) {
+				return $e;
+			}
 		}
 	}
 
 	public function show($id)
 	{
-		$drug = Drug::with('clinic')->find($id);
-		
-		if ($drug) {
-			return new DrugResource($drug);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$drug = Drug::with('clinic')->find($id);
+			if ($drug) {
+				return new DrugResource($drug);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -68,25 +79,32 @@ class DrugController extends Controller
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$drug = Drug::with('clinic')->find($id);
 
-			if ($drug) {
-				return response()->json(['success' => true, 'data' => new DrugResource($drug)], 200);
-			} else {
-				return response()->json(['error' => 'Not found'], 404);
+			try {
+				$drug = Drug::with('clinic')->find($id);
+				if ($drug) {
+					return response()->json(['success' => true, 'data' => new DrugResource($drug)], 200);
+				} else {
+					return response()->json(['error' => 'Not found'], 404);
+				}
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$drug = Drug::find($id);
-
-		if ($drug) {
-			$drug->delete();
-			return response()->json(['success' => true, 'data' => new DrugResource($drug)], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$drug = Drug::find($id);
+			if ($drug) {
+				$drug->delete();
+				return response()->json(['success' => true, 'data' => new DrugResource($drug)], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 }

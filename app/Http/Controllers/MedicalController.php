@@ -15,12 +15,15 @@ class MedicalController extends Controller
 {
 	public function index()
 	{
-		$medicals = Medical::with(['patient', 'user'])->get();
-
-		if ($medicals->count() > 0) {
-			return MedicalResource::collection($medicals);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$medicals = Medical::with(['patient', 'user'])->get();
+			if ($medicals->count() > 0) {
+				return MedicalResource::collection($medicals);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -35,7 +38,7 @@ class MedicalController extends Controller
 			'diagnosis' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 
@@ -50,9 +53,9 @@ class MedicalController extends Controller
 				$medical->action = $request->action;
 				$medical->total = $request->total;
 				$medical->confirmed = false;
-	
+
 				$clinic = Clinic::find($request->clinic_id);
-	
+
 				DB::transaction(function () use ($medical, $clinic) {
 					$medical->save();
 					$clinic->increment('count_medical', 1);
@@ -60,7 +63,7 @@ class MedicalController extends Controller
 					$count->number = $clinic->count_medical;
 					$count->save();
 				});
-	
+
 				return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 201);
 			} catch (Exception $e) {
 				return $e;
@@ -70,12 +73,15 @@ class MedicalController extends Controller
 
 	public function show($id)
 	{
-		$medical = Medical::with(['clinic', 'registration', 'patient'])->find($id);
-
-		if ($medical) {
-			return new MedicalResource($medical);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$medical = Medical::with(['clinic', 'registration', 'patient'])->find($id);
+			if ($medical) {
+				return new MedicalResource($medical);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -88,41 +94,44 @@ class MedicalController extends Controller
 			'total' => 'required'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$medical = Medical::find($id);
 
-			if ($medical) {
-				try {
+			try {
+				$medical = Medical::find($id);
+				if ($medical) {
 					$medical->anamnesa = $request->anamnesa;
 					$medical->diagnosis = $request->diagnosis;
 					$medical->action = $request->action;
 					$medical->total = $request->total;
-	
+
 					DB::transaction(function () use ($medical) {
 						$medical->save();
 					});
-			
+
 					return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 200);
-				} catch (Exception $e) {
-					return $e;
+				} else {
+					return response()->json(['message' => 'Not Found'], 404);
 				}
-			} else {
-				return response()->json(['message' => 'Not Found'], 404);
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$medical = Medical::find($id);
-
-		if ($medical) {
-			$medical->delete();
-			return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$medical = Medical::find($id);
+			if ($medical) {
+				$medical->delete();
+				return response()->json(['success' => true, 'data' => new MedicalResource($medical)], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -134,7 +143,7 @@ class MedicalController extends Controller
 			'fee_id' => 'required|exists:App\Models\Fee,id'
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 			$mf = new MedicalFee();
@@ -146,5 +155,4 @@ class MedicalController extends Controller
 			return response()->json(['success' => true, 'data' => $mf], 201);
 		}
 	}
-
 }

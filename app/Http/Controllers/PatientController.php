@@ -14,12 +14,15 @@ class PatientController extends Controller
 {
 	public function index()
 	{
-		$patients = Patient::all();
-		
-		if ($patients->count() > 0) {
-			return PatientResource::collection($patients);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$patients = Patient::all();
+			if ($patients->count() > 0) {
+				return PatientResource::collection($patients);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -34,7 +37,7 @@ class PatientController extends Controller
 			'phone' => 'required',
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
 
@@ -53,9 +56,9 @@ class PatientController extends Controller
 				$patient->address = $request->address;
 				$patient->phone = $request->phone;
 				$patient->insurance_number = $request->insurance_number;
-	
+
 				$clinic = Clinic::find($request->clinic_id);
-	
+
 				DB::transaction(function () use ($patient, $clinic) {
 					$patient->save();
 					$clinic->increment('count_patient', 1);
@@ -63,7 +66,7 @@ class PatientController extends Controller
 					$count->number = $clinic->count_patient;
 					$count->save();
 				});
-	
+
 				return response()->json(['success' => true, 'data' => new PatientResource($patient)], 201);
 			} catch (Exception $e) {
 				return $e;
@@ -73,12 +76,15 @@ class PatientController extends Controller
 
 	public function show($id)
 	{
-		$patient = Patient::with(['clinic', 'insurance', 'registers', 'medicals', 'letters'])->find($id);
-		
-		if ($patient) {
-			return new PatientResource($patient);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$patient = Patient::with(['clinic', 'insurance', 'registers', 'medicals', 'letters'])->find($id);
+			if ($patient) {
+				return new PatientResource($patient);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
 
@@ -92,13 +98,13 @@ class PatientController extends Controller
 			'phone' => 'required',
 		]);
 
-		if ($validator->fails()) { 
+		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()], 400);
 		} else {
-			$patient = Patient::find($id);
-			
-			if ($patient) {
-				try {
+
+			try {
+				$patient = Patient::find($id);
+				if ($patient) {
 					$patient->insurance_id = $request->insurance_id;
 					$patient->name = $request->name;
 					$patient->number = $request->number;
@@ -111,31 +117,33 @@ class PatientController extends Controller
 					$patient->address = $request->address;
 					$patient->phone = $request->phone;
 					$patient->insurance_number = $request->insurance_number;
-	
+
 					DB::transaction(function () use ($patient) {
 						$patient->save();
 					});
-	
+
 					return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
-				} catch (Exception $e) {
-					return $e;
+				} else {
+					return response()->json(['error' => 'Not found'], 404);
 				}
-			} else {
-				return response()->json(['error' => 'Not found'], 404);
+			} catch (Exception $e) {
+				return $e;
 			}
 		}
 	}
 
 	public function destroy($id)
 	{
-		$patient = Patient::find($id);
-
-		if ($patient) {
-			$patient->delete();
-			return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
-		} else {
-			return response()->json(['error' => 'Not found'], 404);
+		try {
+			$patient = Patient::find($id);
+			if ($patient) {
+				$patient->delete();
+				return response()->json(['success' => true, 'data' => new PatientResource($patient)], 200);
+			} else {
+				return response()->json(['error' => 'Not found'], 404);
+			}
+		} catch (Exception $e) {
+			return $e;
 		}
 	}
-
 }
